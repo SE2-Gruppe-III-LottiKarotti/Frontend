@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoapp;
+package at.aau.serg.websocketdemoapp.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +11,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+
+import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.SpielerMessage;
+import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class MainActivity extends AppCompatActivity {
+
+
 
     TextView textViewServerResponse;
 
@@ -29,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Gson gson = new Gson();
 
         Button buttonConnect = findViewById(R.id.buttonConnect);
         buttonConnect.setOnClickListener(v -> connectToWebSocketServer());
@@ -47,12 +56,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        networkHandler.sendMessageToServer("test message");
+        //testmessage
+        Gson gson = new Gson();
+        TestMessage testMessage = new TestMessage();
+        testMessage.setText("test message");
+        String jsonMessage = gson.toJson(testMessage);
+        //networkHandler.sendMessageToServer("test message");
+        networkHandler.sendMessageToServer(jsonMessage);
     }
 
     private void messageReceivedFromServer(String message) {
         // TODO handle received messages
-        Log.d("Network", message);
-        textViewServerResponse.setText(message);
+        //Gson gson = new Gson();
+        //Log.d("Network", message);
+        //textViewServerResponse.setText(message);
+        //estMessage testMessage = gson.fromJson(message, TestMessage.class);
+        System.out.println(message);
+        runOnUiThread(() -> {
+            Log.d("Network", "from server: " + message);
+            textViewServerResponse.setText(message);
+        });
     }
 }
