@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">WebSocketDemo-App</string>
+    <string name="app_name">Lotti_Karotti_Online_App</string>
+
+    <string name="login_title">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="login_button">Login</string>
+
+    <string name="open_room">Open_Room</string>
+    <string name="join_room">Join_Room</string>
+    <string name="rejoin_room">Rejoin_Room</string>
+    <string name="instructions">Instructions</string>
 </resources>

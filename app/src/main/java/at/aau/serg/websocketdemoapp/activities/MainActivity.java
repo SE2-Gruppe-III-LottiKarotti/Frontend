@@ -1,8 +1,12 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
     WebSocketClient networkHandler;
 
+    ImageView imageView;
+
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +45,49 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        imageView = findViewById(R.id.imageView);
+        progressBar = findViewById(R.id.progressBar);
+
+        imageView.setImageResource(R.drawable.img);
+
         //Gson gson = new Gson();
 
+        /*
         Button buttonConnect = findViewById(R.id.buttonConnect);
         buttonConnect.setOnClickListener(v -> connectToWebSocketServer());
 
         Button buttonSendMsg = findViewById(R.id.buttonSendMsg);
         buttonSendMsg.setOnClickListener(v -> sendMessage());
 
-        textViewServerResponse = findViewById(R.id.textViewResponse);
+        //btn login
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        buttonLogin.setOnClickListener(v -> openLoginActivity());
+
+        textViewServerResponse = findViewById(R.id.textViewResponse);*/
 
         networkHandler = new WebSocketClient();
+        //networkHandler.connectToServer();
+        connectToWebSocketServer();
+        sendMessage();
+
+
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        new Handler().postDelayed(() -> {
+            progressBar.setVisibility(ProgressBar.GONE);
+            goToStartActivity();
+        }, 4000);
     }
+
+    private void goToStartActivity() {
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    /*private void openLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }*/
 
     private void connectToWebSocketServer() {
         // register a handler for received messages when setting up the connection
@@ -74,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(message);
         runOnUiThread(() -> {
             Log.d("Network", "from server: " + message);
-            textViewServerResponse.setText(message);
+            //textViewServerResponse.setText(message);
         });
     }
 }
