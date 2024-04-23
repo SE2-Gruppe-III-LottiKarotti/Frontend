@@ -22,6 +22,8 @@
         <activity
             android:name=".activities.Instructions2"
             android:exported="true"/>
+        <activity android:name=".activities.Instructions3"
+            android:exported="true"/>
         <activity
             android:name=".activities.OpenRoomActivity"
             android:exported="false" />
