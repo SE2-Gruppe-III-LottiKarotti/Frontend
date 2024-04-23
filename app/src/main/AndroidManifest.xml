@@ -20,6 +20,9 @@
             android:name=".activities.Instructions"
             android:exported="true"/>
         <activity
+            android:name=".activities.Instructions2"
+            android:exported="true"/>
+        <activity
             android:name=".activities.OpenRoomActivity"
             android:exported="false" />
         <activity
