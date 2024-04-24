@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:src="@drawable/logo" />
+        android:src="@drawable/karten" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Spielablauf"
+        android:text="Regeln"
         android:textColor="@color/orange"
         android:textSize="34sp"
         android:textStyle="bold" />
@@ -38,16 +38,17 @@
             android:textStyle="normal"
             android:textColor="@android:color/black"
             android:layout_margin="1dp"
-            android:text="Jeder sucht sich seine Lieblingsfarbe aus und nimmt sich die vier Hasenfiguren. Der Hügel kommt in eurer Mitte. Mischt die Karten und legt ihn zu einem verdeckten Stapel. Wer an der Reihe ist, nimmt die oberste Karte vom Stapel und folgt ihrer Anweisung. Hat man seinen Zug beendet, ist der Nächste ist an der Reihe. Wer als Erster von euch die Karotte erreicht, gewinnt und beendet das Spiel! "
-          />
+            android:text="Wer von euch an der Reihe ist, nimmt die oberste Karte vom Stapel und folgt der Anweisung, die auf der Karte steht.
+So kann es sein, dass ihr ein Feld weiter gehen, zwei oder drei überspringen oder an der Karotte drehen sollt. Wenn einer von euch an der Karotte dreht, können die Hasen einfach durch ein Loch im Hügel verschwinden. Diese bleiben bis zum Spielende dort versteckt und fehlen euch! Wer als Erster von euch die Karotte erreicht, gewinnt!"
+            />
 
         <Button
-            android:id="@+id/nextButton"
+            android:id="@+id/closeButton"
             android:backgroundTint="@color/orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Weiter" />
+            android:text="Schließen" />
     </LinearLayout>
 
 </LinearLayout>
