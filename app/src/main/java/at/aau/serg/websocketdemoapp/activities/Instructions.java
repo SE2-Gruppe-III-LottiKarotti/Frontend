@@ -7,19 +7,21 @@ import android.widget.Button;
 
 import at.aau.serg.websocketdemoapp.R;
 
-public class Instructions extends MainActivity {
+public class Instructions extends StartActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
 
-        Button nextButton = findViewById(R.id.nextButton);
+        configureNextButton();
+    }
+    private void configureNextButton(){
+        Button nextButton = (Button) findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Instructions.this, Instructions2.class);
-                startActivity(intent);
+                startActivity(new Intent(Instructions.this, Instructions2.class));
             }
         });
     }

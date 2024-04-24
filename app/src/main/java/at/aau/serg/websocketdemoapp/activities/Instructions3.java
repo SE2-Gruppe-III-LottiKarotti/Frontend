@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import at.aau.serg.websocketdemoapp.R;
 
-public class Instructions3 extends MainActivity {
+public class Instructions3 extends StartActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

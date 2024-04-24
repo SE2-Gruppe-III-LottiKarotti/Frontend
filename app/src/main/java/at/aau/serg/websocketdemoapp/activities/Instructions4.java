@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import at.aau.serg.websocketdemoapp.R;
 
-public class Instructions4 extends MainActivity {
+public class Instructions4 extends StartActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class Instructions4 extends MainActivity {
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Instructions4.this, MainActivity.class);
+                Intent intent = new Intent(Instructions4.this, StartActivity.class);
                 startActivity(intent);
             }
         });
