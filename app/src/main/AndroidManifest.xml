@@ -29,12 +29,14 @@
             android:name=".activities.Instructions4"
             android:exported="true"/>
         <activity
+            android:name=".activities.GameActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.OpenRoomActivity"
             android:exported="false" />
         <activity
             android:name=".activities.StartActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">
