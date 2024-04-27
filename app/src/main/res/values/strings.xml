@@ -15,4 +15,5 @@
     <string name="draw_card">Draw Card</string>
     <string name="guess_cheater">Guess Cheater</string>
     <string name="chat">Chat</string>
+    <string name="remaining_rabbits">Remaining rabbits</string>
 </resources>
