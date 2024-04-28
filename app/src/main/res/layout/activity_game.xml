@@ -76,7 +76,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/background">
 
-        <TextView
+        <ImageView
             android:id="@+id/field5"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -86,7 +86,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field4"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -95,7 +95,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field3"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -113,7 +113,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field1"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -122,7 +122,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field6"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -132,7 +132,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field7"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -141,7 +141,7 @@
             android:layout_toEndOf="@id/field6"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field8"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -150,7 +150,7 @@
             android:layout_toEndOf="@id/field7"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field9"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -159,7 +159,7 @@
             android:layout_toEndOf="@id/field8"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field10"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -168,7 +168,7 @@
             android:layout_toEndOf="@id/field9"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field11"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -178,7 +178,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field12"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -188,7 +188,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field13"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -198,7 +198,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field14"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -208,7 +208,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field15"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -218,7 +218,7 @@
             android:layout_marginBottom="35dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field16"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -228,7 +228,7 @@
             android:layout_toStartOf="@id/field15"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field17"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -238,7 +238,7 @@
             android:layout_toStartOf="@id/field16"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field18"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -248,7 +248,7 @@
             android:layout_toStartOf="@id/field17"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field19"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -258,7 +258,7 @@
             android:layout_marginBottom="75dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field20"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -267,7 +267,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field21"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -276,7 +276,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field22"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -285,7 +285,7 @@
             android:layout_marginBottom="7dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field23"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -294,7 +294,7 @@
             android:layout_toEndOf="@id/field22"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field24"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -303,7 +303,7 @@
             android:layout_toEndOf="@id/field23"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field25"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -313,7 +313,7 @@
             android:layout_marginEnd="90dp"
             android:background="@color/yellow" />
 
-        <TextView
+        <ImageView
             android:id="@+id/field26"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -393,7 +393,7 @@
             android:layout_height="46dp"
             android:layout_marginStart="15dp"
             app:srcCompat="@drawable/red_rabbit"
-            android:layout_below="@id/rabbits"/>
+            android:layout_below="@id/rabbits" />
 
         <ImageView
             android:id="@+id/rabbit2"

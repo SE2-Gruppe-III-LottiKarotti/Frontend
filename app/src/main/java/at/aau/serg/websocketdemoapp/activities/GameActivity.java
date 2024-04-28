@@ -2,9 +2,14 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import static com.google.gson.internal.$Gson$Types.arrayOf;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +21,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.lang.reflect.Array;
+import java.util.Random;
 
 import at.aau.serg.websocketdemoapp.R;
 
 public class GameActivity extends AppCompatActivity {
+    ImageView[] fields;
+
+    int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,71 +41,85 @@ public class GameActivity extends AppCompatActivity {
             return insets;
         });
 
-        int[] fields = new int[26];
-
         ImageView rabbit1 = findViewById(R.id.rabbit1);
         ImageView rabbit2 = findViewById(R.id.rabbit2);
         ImageView rabbit3 = findViewById(R.id.rabbit3);
         ImageView rabbit4 = findViewById(R.id.rabbit4);
 
-        TextView field1 = findViewById(R.id.field1);
+        ImageView field1 = findViewById(R.id.field1);
         ImageView field2 = findViewById(R.id.field2);
-        TextView field3 = findViewById(R.id.field3);
-        TextView field4 = findViewById(R.id.field4);
-        TextView field5 = findViewById(R.id.field5);
-        TextView field6 = findViewById(R.id.field6);
-        TextView field7 = findViewById(R.id.field7);
-        TextView field8 = findViewById(R.id.field8);
-        TextView field9 = findViewById(R.id.field9);
-        TextView field10 = findViewById(R.id.field10);
-        TextView field11 = findViewById(R.id.field11);
-        TextView field12 = findViewById(R.id.field12);
-        TextView field13 = findViewById(R.id.field13);
-        TextView field14 = findViewById(R.id.field14);
-        TextView field15 = findViewById(R.id.field15);
-        TextView field16 = findViewById(R.id.field16);
-        TextView field17 = findViewById(R.id.field17);
-        TextView field18 = findViewById(R.id.field18);
-        TextView field19 = findViewById(R.id.field19);
-        TextView field20 = findViewById(R.id.field20);
-        TextView field21 = findViewById(R.id.field21);
-        TextView field22 = findViewById(R.id.field22);
-        TextView field23 = findViewById(R.id.field23);
-        TextView field24 = findViewById(R.id.field24);
-        TextView field25 = findViewById(R.id.field25);
-        TextView field26 = findViewById(R.id.field26);
+        ImageView field3 = findViewById(R.id.field3);
+        ImageView field4 = findViewById(R.id.field4);
+        ImageView field5 = findViewById(R.id.field5);
+        ImageView field6 = findViewById(R.id.field6);
+        ImageView field7 = findViewById(R.id.field7);
+        ImageView field8 = findViewById(R.id.field8);
+        ImageView field9 = findViewById(R.id.field9);
+        ImageView field10 = findViewById(R.id.field10);
+        ImageView field11 = findViewById(R.id.field11);
+        ImageView field12 = findViewById(R.id.field12);
+        ImageView field13 = findViewById(R.id.field13);
+        ImageView field14 = findViewById(R.id.field14);
+        ImageView field15 = findViewById(R.id.field15);
+        ImageView field16 = findViewById(R.id.field16);
+        ImageView field17 = findViewById(R.id.field17);
+        ImageView field18 = findViewById(R.id.field18);
+        ImageView field19 = findViewById(R.id.field19);
+        ImageView field20 = findViewById(R.id.field20);
+        ImageView field21 = findViewById(R.id.field21);
+        ImageView field22 = findViewById(R.id.field22);
+        ImageView field23 = findViewById(R.id.field23);
+        ImageView field24 = findViewById(R.id.field24);
+        ImageView field25 = findViewById(R.id.field25);
+        ImageView field26 = findViewById(R.id.field26);
 
-        rabbit1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                field2.setImageResource(R.drawable.red_rabbit);
-                rabbit1.setImageDrawable(null);
-            }
+        fields = new ImageView[]{field1, field2, field3, field4, field5, field6, field7, field8, field9,
+                field10, field11, field12, field13, field14, field15, field16, field17, field18, field19,
+                field20, field21, field22, field23, field24, field25, field26};
+
+        rabbit1.setOnClickListener(v -> {
+            moveRabbit(rabbit1, currentRabbitPosition(1));
+            //rabbit1.setImageDrawable(null);
         });
 
-        rabbit2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                field2.setImageResource(R.drawable.red_rabbit);
-                rabbit1.setImageDrawable(null);
-            }
+        rabbit2.setOnClickListener(v -> {
         });
 
-        rabbit3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                field2.setImageResource(R.drawable.red_rabbit);
-                rabbit1.setImageDrawable(null);
-            }
+        rabbit3.setOnClickListener(v -> {
         });
 
-        rabbit4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                field2.setImageResource(R.drawable.red_rabbit);
-                rabbit1.setImageDrawable(null);
-            }
+        rabbit4.setOnClickListener(v -> {
         });
     }
 
-}
+    private int currentRabbitPosition(int rabbitNumber) {
+        for (int i = 0; i < rabbitPosition.length; i++) {
+            if (rabbitPosition[i] == rabbitNumber) {
+                rabbitPosition[i] = 0;
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private void moveRabbit(ImageView clickedRabbit, int currentPosition) {
+        Random rand = new Random();
+        int fieldToGo = rand.nextInt(4);
+        ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
+        ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
+        currentParent.removeView(clickedRabbit);
+
+        // Add the rabbit ImageView to the parent layout of the fields
+        parentLayout.addView(clickedRabbit);
+        //fields[currentPosition].setImageDrawable(null);
+        //fields[currentPosition+fieldToGo].setImageResource(R.drawable.red_rabbit);
+
+        float targetX = fields[currentPosition+fieldToGo].getX();
+        float targetY = fields[currentPosition+fieldToGo].getY();
+
+        clickedRabbit.setX(targetX);
+        clickedRabbit.setY(targetY);
+
+        rabbitPosition[currentPosition+fieldToGo]=1;
+        }
+    }
