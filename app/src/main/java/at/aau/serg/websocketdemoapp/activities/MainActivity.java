@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             progressBar.setVisibility(ProgressBar.GONE);
             goToStartActivity();
-        }, 4000);
+        }, 2000);
     }
 
     private void goToStartActivity() {
