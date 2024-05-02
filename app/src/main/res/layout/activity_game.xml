@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/relative_layout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="5dp">
 
         <Button
             android:id="@+id/btn_draw"
@@ -76,261 +76,261 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/background">
 
-        <Button
+        <ImageView
             android:id="@+id/field5"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="15dp"
             android:layout_marginTop="75dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field4"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field5"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field3"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field4"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field2"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field3"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field1"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field2"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field6"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_marginStart="35dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field7"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/field6"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field8"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/field7"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field9"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/field8"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field10"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/field9"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field11"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="75dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field12"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field11"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field13"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field12"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field14"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field13"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field15"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="35dp"
-            android:layout_marginBottom="15dp"
-            android:backgroundTint="@color/yellow" />
+            android:layout_marginBottom="35dp"
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field16"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:layout_toStartOf="@id/field15"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field17"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:layout_toStartOf="@id/field16"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field18"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:layout_toStartOf="@id/field17"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field19"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="90dp"
             android:layout_marginBottom="75dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field20"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@id/field19"
             android:layout_marginStart="90dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field21"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@id/field20"
             android:layout_marginStart="90dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field22"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@id/field21"
             android:layout_marginStart="105dp"
             android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field23"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="75dp"
             android:layout_toEndOf="@id/field22"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field24"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="75dp"
             android:layout_toEndOf="@id/field23"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field25"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field24"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="90dp"
-            android:backgroundTint="@color/yellow" />
+            android:background="@color/yellow" />
 
-        <Button
+        <ImageView
             android:id="@+id/field26"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_below="@id/field25"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="90dp"
-            android:layout_marginBottom="7dp"
-            android:backgroundTint="@color/yellow" />
+            android:layout_marginTop="7dp"
+            android:background="@color/yellow" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="77dp"
+            android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:layout_marginEnd="156dp"
             android:layout_marginBottom="249dp"
-            android:backgroundTint="#00FFFFFF"
+            android:background="#00FFFFFF"
             app:srcCompat="@drawable/carrot" />
 
     </RelativeLayout>
@@ -339,7 +339,8 @@
         android:layout_width="400dp"
         android:layout_height= "wrap_content"
         android:layout_below="@+id/relative_layout3"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        tools:ignore="ExtraText">
 
         <Button
             android:id="@+id/btn_chat"
@@ -358,20 +359,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="0dp"
             android:text="Player name"
             android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/playerNameInput"
+            android:hint="MaxMüller123"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="0dp"
+            android:textColor="@color/black"
+            android:layout_below="@id/playerName"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/rabbits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/playerNameInput"
             android:layout_marginStart="15dp"
-            android:layout_below="@id/playerName"
-            android:text="Remaining rabbits"
+            android:text="@string/remaining_rabbits"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/rabbit1"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="15dp"
+            app:srcCompat="@drawable/red_rabbit"
+            android:layout_below="@id/rabbits" />
+
+        <ImageView
+            android:id="@+id/rabbit2"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/red_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit1"/>
+
+        <ImageView
+            android:id="@+id/rabbit3"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/red_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit2"/>
+
+        <ImageView
+            android:id="@+id/rabbit4"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/red_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit3"/>
 
     </RelativeLayout>
 
