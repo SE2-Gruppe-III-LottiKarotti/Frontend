@@ -147,6 +147,7 @@ public class GameActivity extends AppCompatActivity {
         clickedRabbit.setX(targetX);
         clickedRabbit.setY(targetY);
 
+
         rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
         }
     }
