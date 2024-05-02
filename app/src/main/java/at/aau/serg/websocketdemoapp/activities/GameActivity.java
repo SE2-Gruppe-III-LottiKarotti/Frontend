@@ -28,7 +28,7 @@ import at.aau.serg.websocketdemoapp.R;
 public class GameActivity extends AppCompatActivity {
     ImageView[] fields;
 
-    int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,23 +72,38 @@ public class GameActivity extends AppCompatActivity {
         ImageView field24 = findViewById(R.id.field24);
         ImageView field25 = findViewById(R.id.field25);
         ImageView field26 = findViewById(R.id.field26);
+        ImageView field27 = findViewById(R.id.field27);
 
         fields = new ImageView[]{field1, field2, field3, field4, field5, field6, field7, field8, field9,
                 field10, field11, field12, field13, field14, field15, field16, field17, field18, field19,
-                field20, field21, field22, field23, field24, field25, field26};
+                field20, field21, field22, field23, field24, field25, field26, field27};
 
-        rabbit1.setOnClickListener(v -> {
-            moveRabbit(rabbit1, currentRabbitPosition(1));
-            //rabbit1.setImageDrawable(null);
+        rabbit1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveRabbit(rabbit1, currentRabbitPosition(1), 1);
+            }
         });
 
-        rabbit2.setOnClickListener(v -> {
+        rabbit2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveRabbit(rabbit2, currentRabbitPosition(2), 2);
+            }
         });
 
-        rabbit3.setOnClickListener(v -> {
+        rabbit3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveRabbit(rabbit3, currentRabbitPosition(3), 3);
+            }
         });
 
-        rabbit4.setOnClickListener(v -> {
+        rabbit4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveRabbit(rabbit4, currentRabbitPosition(4), 4);
+            }
         });
     }
 
@@ -102,24 +117,36 @@ public class GameActivity extends AppCompatActivity {
         return 0;
     }
 
-    private void moveRabbit(ImageView clickedRabbit, int currentPosition) {
+    private boolean isFieldFree (int fieldToGo) {
+        return rabbitPosition[fieldToGo] == 0;
+    }
+
+    private void moveRabbit(ImageView clickedRabbit, int currentPosition, int rabbitNumber) {
         Random rand = new Random();
-        int fieldToGo = rand.nextInt(4);
+        int fieldToGo = rand.nextInt(4)+1;
+
+        if(fieldToGo + currentPosition >= fields.length){
+            fieldToGo = rand.nextInt(fields.length - currentPosition) +1;
+        }
+
         ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
         ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
         currentParent.removeView(clickedRabbit);
 
         // Add the rabbit ImageView to the parent layout of the fields
         parentLayout.addView(clickedRabbit);
-        //fields[currentPosition].setImageDrawable(null);
-        //fields[currentPosition+fieldToGo].setImageResource(R.drawable.red_rabbit);
+
+        while(!(isFieldFree(currentPosition+fieldToGo))) {
+            int newTarget = currentPosition+fieldToGo;
+
+            fieldToGo++;
+        }
 
         float targetX = fields[currentPosition+fieldToGo].getX();
         float targetY = fields[currentPosition+fieldToGo].getY();
-
         clickedRabbit.setX(targetX);
         clickedRabbit.setY(targetY);
 
-        rabbitPosition[currentPosition+fieldToGo]=1;
+        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
         }
     }
