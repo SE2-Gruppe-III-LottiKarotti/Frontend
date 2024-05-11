@@ -3,6 +3,8 @@ package at.aau.serg.websocketdemoapp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
+
 
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 

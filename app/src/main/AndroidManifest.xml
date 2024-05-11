@@ -19,6 +19,8 @@
         <activity
             android:name=".activities.Instructions"
             android:exported="true"/>
+        <activity android:name=".activities.Chat"
+            android:exported="true"/>
         <activity
             android:name=".activities.Instructions2"
             android:exported="true"/>
