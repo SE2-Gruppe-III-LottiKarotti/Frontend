@@ -22,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.gson.Gson;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.CreateRoomMessage;
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.RoomSetupMessage;
 import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
@@ -70,12 +72,8 @@ public class OpenRoomActivity extends AppCompatActivity {
         //verbindung aufrufen
         connectToWebSocketServer();
 
-        buttonOpenRoomNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //openRoom();
-                sendMessage();
-            }
+        buttonOpenRoomNow.setOnClickListener((view) -> {
+            sendMessage();
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +88,6 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        // register a handler for received messages when setting up the connection
         networkHandler.connectToServer(this::messageReceivedFromServer);
     }
 
@@ -98,28 +95,13 @@ public class OpenRoomActivity extends AppCompatActivity {
 
 
     private void sendMessage() {
-        //read input
-        String roomName = editTextRoomName.getText().toString();
+        CreateRoomMessage createRoomMessage = new CreateRoomMessage();
+        createRoomMessage.setMessageType(MessageType.CREATE_ROOM);
+        createRoomMessage.setRoomName(editTextCreator.getText().toString());
+        createRoomMessage.setRoomName(editTextRoomName.getText().toString());
 
-        /*if (roomName.length() < 4 || roomName.length() > 8) {
-            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 8 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
-            return; //exit aus dieser methode
-
-        }*/
-
-        String finalNumPlayers = spinnerNumPlayers.getSelectedItem().toString();
-        String creatorName = editTextCreator.getText().toString();
-
-        //setMessage
-        RoomSetupMessage roomSetupMessage = new RoomSetupMessage(roomName, finalNumPlayers, creatorName);
-        roomSetupMessage.setRoomID("emptyRoomID");
-        roomSetupMessage.setPlayerID("emptyPlayerID");
-
-        //json
-        String jsonMessage = new Gson().toJson(roomSetupMessage);
+        String jsonMessage = new Gson().toJson(createRoomMessage);
         networkHandler.sendMessageToServer(jsonMessage);
-
-
     }
 
     @Override
@@ -130,14 +112,11 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     private void messageReceivedFromServer(String message) {
         // TODO handle received messages
-        //Gson gson = new Gson();
-        //Log.d("Network", message);
-        //textViewServerResponse.setText(message);
-        //testMessage testMessage = gson.fromJson(message, TestMessage.class);
-        System.out.println(message);
         runOnUiThread(() -> {
-            Log.d("Network", "from server: " + message);
-            //textViewServerResponse.setText(message);
+            Log.d("OPEN ROOM", message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            Intent intent =  new Intent(this, GameActivity.class);
+            startActivity(intent);
         });
     }
 

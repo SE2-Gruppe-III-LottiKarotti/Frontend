@@ -1,32 +1,28 @@
 package at.aau.serg.websocketdemoapp.activities;
 
-import static com.google.gson.internal.$Gson$Types.arrayOf;
-
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.lang.reflect.Array;
-import java.util.Random;
-
+import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
+import com.google.gson.Gson;
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.MessageType;
+import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
     ImageView[] fields;
+
+    WebSocketClient networkHandler;
+    DrawCardMessage drawCardMessage;
+    Gson gson =  new Gson();
+    Button button;
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -41,6 +37,37 @@ public class GameActivity extends AppCompatActivity {
             return insets;
         });
 
+        networkHandler = new WebSocketClient();
+        connectToServer();
+
+        button = findViewById(R.id.btn_draw);
+
+        drawCardMessage =  new DrawCardMessage();
+
+        button.setOnClickListener((view) -> {
+            sendMessageDraw();
+        });
+    }
+
+    private void connectToServer() {
+        networkHandler.connectToServer(this::receiveDrawMessage);
+    }
+
+    private void receiveDrawMessage(String message) {
+        runOnUiThread(() -> {
+            Log.d("DRAW CARD", message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        });
+    }
+    private void sendMessageDraw() {
+        drawCardMessage.setMessageType(MessageType.DRAW_CARD);
+        drawCardMessage.setPlayerID("");
+        drawCardMessage.setRoomID("");
+
+        networkHandler.sendMessageToServer(gson.toJson(drawCardMessage));
+    }
+
+/*
         ImageView rabbit1 = findViewById(R.id.rabbit1);
         ImageView rabbit2 = findViewById(R.id.rabbit2);
         ImageView rabbit3 = findViewById(R.id.rabbit3);
@@ -148,6 +175,6 @@ public class GameActivity extends AppCompatActivity {
         clickedRabbit.setY(targetY);
 
 
-        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
-        }
-    }
+        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;*/
+
+}
