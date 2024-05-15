@@ -49,11 +49,11 @@ public class SelectRoomActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+/*
         listViewRooms = findViewById(R.id.listViewRooms);
         editTextPlayerName = findViewById(R.id.editTextPlayerName);
         buttonSend = findViewById(R.id.buttonSend);
-
+*/
         //init
         webSocketClient = new WebSocketClient();
 

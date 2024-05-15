@@ -5,36 +5,4 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SelectRoomActivity">
-
-    <ListView
-        android:id="@+id/listViewRooms"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/buttonSend"
-        android:layout_marginBottom="16dp" />
-
-    <EditText
-        android:id="@+id/editTextPlayerName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Enter your name"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true" />
-
-    <Button
-        android:id="@+id/buttonSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:text="Send"
-        android:enabled="false" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".activities.SelectRoomActivity"/>
