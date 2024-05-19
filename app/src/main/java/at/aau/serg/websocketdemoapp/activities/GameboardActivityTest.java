@@ -1,6 +1,10 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +26,19 @@ public class GameboardActivityTest extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //progressBar = findViewById(R.id.progressBar);
+        //textViewMessage = findViewById(R.id.textViewMessage);
+
+
+        // Delay for 2 seconds before redirecting
+        //progressBar.setVisibility(ProgressBar.GONE);
+        goToGameActivity();
+    }
+
+    private void goToGameActivity() {
+        Intent intent = new Intent(this, GameActivity.class);
+        startActivity(intent);
+        //finish();
     }
 }

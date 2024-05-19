@@ -32,7 +32,6 @@ import at.aau.serg.websocketdemoapp.msg.BaseMessage;
 import at.aau.serg.websocketdemoapp.msg.JoinRoomMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.RoomListMessage;
-import at.aau.serg.websocketdemoapp.msg.RoomSetupMessage;
 import at.aau.serg.websocketdemoapp.networking.RoomInfo;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
@@ -173,7 +172,7 @@ public class JoinRoomActivity extends AppCompatActivity {
     private void handleRoomListMessage(RoomListMessage message) {
         //
         /**mit der liste gibt es noch probleme*/
-        
+
         if (message.getActionTypeRoomListMessage() == RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_OK) {
             List<RoomInfo> receivedRooms = message.getRoomInfoArrayList();
             Log.d("MSG", "received room list " + message);
