@@ -3,9 +3,9 @@ package at.aau.serg.websocketdemoapp.msg;
 import java.util.ArrayList;
 
 import at.aau.serg.websocketdemoapp.networking.RoomInfo;
-import lombok.Data;
+//import lombok.Data;
 
-@Data
+//@Data
 public class RoomListMessage {
 
     private final MessageType messageType = MessageType.LIST_ROOMS;
@@ -18,4 +18,23 @@ public class RoomListMessage {
         ANSWER_ROOM_LISR_ERR
     }
 
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public ArrayList<RoomInfo> getRoomInfoArrayList() {
+        return roomInfoArrayList;
+    }
+
+    public void setRoomInfoArrayList(ArrayList<RoomInfo> roomInfoArrayList) {
+        this.roomInfoArrayList = roomInfoArrayList;
+    }
+
+    public ActionTypeRoomListMessage getActionTypeRoomListMessage() {
+        return actionTypeRoomListMessage;
+    }
+
+    public void setActionTypeRoomListMessage(ActionTypeRoomListMessage actionTypeRoomListMessage) {
+        this.actionTypeRoomListMessage = actionTypeRoomListMessage;
+    }
 }

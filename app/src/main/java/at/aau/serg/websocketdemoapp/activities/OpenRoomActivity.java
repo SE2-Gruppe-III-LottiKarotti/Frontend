@@ -120,11 +120,12 @@ public class OpenRoomActivity extends AppCompatActivity {
         String roomName = editTextRoomName.getText().toString();
 
         //check for size
-        /*if (roomName.length() < 4 || roomName.length() > 10) {
-            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 10 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
-            return; //exit aus dieser methode
 
-        }*/
+        if (roomName.length() < 4 || roomName.length() > 10) {
+            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 10 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //messageIdentifierOpenRoom = UUID.randomUUID().toString();
 
         //set message starts here...

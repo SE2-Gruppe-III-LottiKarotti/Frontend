@@ -78,8 +78,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void openJoinRoomActivity() {
-        //Intent intent = new Intent(this, JoinRoomActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, JoinRoomActivity.class);
+        startActivity(intent);
     }
 
     private void openRejoinRoomActivity() {
@@ -88,8 +88,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void openInstructionsActivity() {
-        //Intent intent = new Intent(this, InstructionsActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, Instructions.class);
+        startActivity(intent);
     }
 
 
