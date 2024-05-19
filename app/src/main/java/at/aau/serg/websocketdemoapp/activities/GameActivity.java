@@ -45,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
         drawCardMessage =  new DrawCardMessage();
 
         button.setOnClickListener((view) -> {
-            sendMessageDraw();
+            //sendMessageDraw();
         });
     }
 
@@ -59,13 +59,13 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         });
     }
-    private void sendMessageDraw() {
+    /*private void sendMessageDraw() {
         drawCardMessage.setMessageType(MessageType.DRAW_CARD);
         drawCardMessage.setPlayerID("");
         drawCardMessage.setRoomID("");
 
         networkHandler.sendMessageToServer(gson.toJson(drawCardMessage));
-    }
+    }*/
 
 /*
         ImageView rabbit1 = findViewById(R.id.rabbit1);
