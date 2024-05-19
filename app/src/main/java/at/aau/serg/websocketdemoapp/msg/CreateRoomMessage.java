@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CreateRoomMessage {
-    MessageType messageType;
-    String roomName;
-    String playerName;
+    private MessageType messageType;
+    private String roomName;
+    private String playerName;
 }

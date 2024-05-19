@@ -95,13 +95,13 @@ public class OpenRoomActivity extends AppCompatActivity {
 
 
     private void sendMessage() {
-        CreateRoomMessage createRoomMessage = new CreateRoomMessage();
+        /*CreateRoomMessage createRoomMessage = new CreateRoomMessage();
         createRoomMessage.setMessageType(MessageType.CREATE_ROOM);
         createRoomMessage.setRoomName(editTextCreator.getText().toString());
         createRoomMessage.setRoomName(editTextRoomName.getText().toString());
 
         String jsonMessage = new Gson().toJson(createRoomMessage);
-        networkHandler.sendMessageToServer(jsonMessage);
+        networkHandler.sendMessageToServer(jsonMessage);*/
     }
 
     @Override
