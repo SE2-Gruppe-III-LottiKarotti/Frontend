@@ -9,4 +9,11 @@
     <string name="join_room">Join_Room</string>
     <string name="rejoin_room">Rejoin_Room</string>
     <string name="instructions">Instructions</string>
+    <string name="draw">draw card</string>
+    <string name="round_1">Round: 1</string>
+    <string name="player_it_s_your_turn">Player ... it\'s your turn</string>
+    <string name="draw_card">Draw Card</string>
+    <string name="guess_cheater">Guess Cheater</string>
+    <string name="chat">Chat</string>
+    <string name="remaining_rabbits">Remaining rabbits</string>
 </resources>

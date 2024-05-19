@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/inhalt"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:src="@drawable/inhalt" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Spielausstattung"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:textColor="@color/orange"
+        android:gravity="center"
+        android:padding="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/instructionTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:textColor="@android:color/black"
+            android:layout_margin="16dp"
+            android:text="1 grüner Hügel mit drehbarer Karotte"
+            />
+        <TextView
+            android:id="@+id/instructionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:textColor="@android:color/black"
+            android:layout_margin="16dp"
+            android:text="16 Hasen in 4 Farben"
+            />
+        <TextView
+            android:id="@+id/instructionTextView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:textColor="@android:color/black"
+            android:layout_margin="16dp"
+            android:text="48 Aktionskarten"
+            />
+
+        <Button
+            android:id="@+id/nextButton"
+            android:backgroundTint="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Weiter" />
+    </LinearLayout>
+
+</LinearLayout>

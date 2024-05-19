@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/inhalt"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Spielablauf"
+        android:textColor="@color/orange"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/instructionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="19dp"
+            android:textStyle="normal"
+            android:textColor="@android:color/black"
+            android:layout_margin="1dp"
+            android:text="Jeder sucht sich seine Lieblingsfarbe aus und nimmt sich die vier Hasenfiguren. Der Hügel kommt in eurer Mitte. Mischt die Karten und legt ihn zu einem verdeckten Stapel. Wer an der Reihe ist, nimmt die oberste Karte vom Stapel und folgt ihrer Anweisung. Hat man seinen Zug beendet, ist der Nächste ist an der Reihe. Wer als Erster von euch die Karotte erreicht, gewinnt und beendet das Spiel! "
+          />
+
+        <Button
+            android:id="@+id/nextButton"
+            android:backgroundTint="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Weiter" />
+    </LinearLayout>
+
+</LinearLayout>

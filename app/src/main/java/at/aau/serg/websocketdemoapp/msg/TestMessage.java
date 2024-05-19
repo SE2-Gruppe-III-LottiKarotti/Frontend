@@ -5,6 +5,8 @@ public class TestMessage {
 
     private String text;
 
+    String messageIdentifier;
+
     public TestMessage() {
     }
 
@@ -22,5 +24,13 @@ public class TestMessage {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getMessageIdentifier() {
+        return messageIdentifier;
+    }
+
+    public void setMessageIdentifier(String messageIdentifier) {
+        this.messageIdentifier = messageIdentifier;
     }
 }
