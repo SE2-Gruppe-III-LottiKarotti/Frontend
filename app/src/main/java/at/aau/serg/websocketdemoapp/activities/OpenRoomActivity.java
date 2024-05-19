@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,10 +21,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.CreateRoomMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
+import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.msg.RoomSetupMessage;
 import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
@@ -37,10 +40,14 @@ public class OpenRoomActivity extends AppCompatActivity {
     EditText editTextCreator;
     Button buttonOpenRoomNow;
 
+    TextView responseMessage;
+
     //NEW
     WebSocketClient networkHandler;
 
     SharedPreferences sharedPreferences;
+
+    private final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,8 @@ public class OpenRoomActivity extends AppCompatActivity {
         editTextCreator = findViewById(R.id.editTextCreatorName);
         buttonOpenRoomNow = findViewById(R.id.buttonOpenRoomNow);
         backButton = findViewById(R.id.backButton);
+        responseMessage = findViewById(R.id.textViewResponse);
+
 
         String[] playerOptions = new String [] {"2", "3", "4"};
         ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, playerOptions);
@@ -72,8 +81,12 @@ public class OpenRoomActivity extends AppCompatActivity {
         //verbindung aufrufen
         connectToWebSocketServer();
 
-        buttonOpenRoomNow.setOnClickListener((view) -> {
-            sendMessage();
+        buttonOpenRoomNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //openRoom();
+                sendMessage();
+            }
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +115,34 @@ public class OpenRoomActivity extends AppCompatActivity {
 
         String jsonMessage = new Gson().toJson(createRoomMessage);
         networkHandler.sendMessageToServer(jsonMessage);*/
+
+        //read input
+        String roomName = editTextRoomName.getText().toString();
+
+        //check for size
+        /*if (roomName.length() < 4 || roomName.length() > 10) {
+            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 10 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
+            return; //exit aus dieser methode
+
+        }*/
+        //messageIdentifierOpenRoom = UUID.randomUUID().toString();
+
+        //set message starts here...
+        String finalNumPlayers = spinnerNumPlayers.getSelectedItem().toString();
+        String creatorName = editTextCreator.getText().toString();
+
+
+        OpenRoomMessage openRoomMessage = new OpenRoomMessage();
+        openRoomMessage.setPlayerName(creatorName);
+        openRoomMessage.setNumPlayers(finalNumPlayers);
+        openRoomMessage.setRoomName(roomName);
+
+        //wichtig, um danach die message beim Empfang zu identifizieren
+
+
+        //json
+        String jsonMessage = new Gson().toJson(openRoomMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
     }
 
     @Override
@@ -110,7 +151,7 @@ public class OpenRoomActivity extends AppCompatActivity {
         connectToWebSocketServer();
     }
 
-    private void messageReceivedFromServer(String message) {
+    /*private void messageReceivedFromServer(String message) {
         // TODO handle received messages
         runOnUiThread(() -> {
             Log.d("OPEN ROOM", message);
@@ -118,6 +159,51 @@ public class OpenRoomActivity extends AppCompatActivity {
             Intent intent =  new Intent(this, GameActivity.class);
             startActivity(intent);
         });
+    }*/
+    private <T> void messageReceivedFromServer(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+            Log.d("LOGG", "reached entry messageReceivedFromServer");
+            // Versuche, die Nachricht als TestMessage zu deserialisieren
+            try {
+                OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
+
+                if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK) {
+                    // Handle OPEN_ROOM_OK action type
+                    runOnUiThread(() -> {
+                        Log.d("Network", "OPEN_ROOM_OK received: " + jsonString);
+                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_OK messageReceivedFromServer");
+                        Log.d("LOGG", jsonString);
+
+                        responseMessage.setText(jsonString);
+
+                        // Redirect to the next activity
+                        Intent intent = new Intent(OpenRoomActivity.this, GameboardActivityTest.class);
+                        startActivity(intent);
+                        finish(); // Close this activity
+                    });
+                } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
+                    // Handle OPEN_ROOM_ERR action type
+                    runOnUiThread(() -> {
+                        Log.d("Network", "OPEN_ROOM_ERR received: " + jsonString);
+                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
+                        responseMessage.setText(jsonString);
+
+                        // Display error message to the user
+                        Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+            } catch (JsonSyntaxException e) {
+                // Falls die Deserialisierung fehlschlägt, zeige den gesamten Text der Nachricht an
+                runOnUiThread(() -> {
+                    Log.d("Network", "Failed to parse JSON message: " + jsonString, e);
+                    Log.d("LOGG", "reached errorBlock messageReceivedFromServer");
+                    responseMessage.setText(jsonString);
+                });
+            }
+        }
+
     }
 
 
