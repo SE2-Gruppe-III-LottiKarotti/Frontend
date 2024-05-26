@@ -16,6 +16,9 @@ import androidx.fragment.app.FragmentTransaction;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
+
+import java.util.Random;
+
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
@@ -57,7 +60,9 @@ public class GameActivity extends AppCompatActivity {
 
         //Test for drawing a card
         button.setOnClickListener((view) -> {
-            String serverResponse = "1";
+            Random rand = new Random();
+            int random = rand.nextInt(4)+1;
+            String serverResponse = Integer.toString(random);
             showPopup(serverResponse);
         });
 
@@ -80,11 +85,28 @@ public class GameActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Handle default case
-        if (serverResponse.equals("1")) {
-            rabbit1 = new Rabbit1();
-            fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+        if (serverResponse != null) {
+            switch (serverResponse) {
+                case "1":
+                    rabbit1 = new Rabbit1();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+                    break;
+                case "2":
+                    rabbit2 = new Rabbit2();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
+                    break;
+                case "3":
+                    rabbit3 = new Rabbit3();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
+                    break;
+                case "4":
+                    carrot = new Carrot();
+                    fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
+                    break;
+                default:
+                    break;
+            }
         }
-
         fragmentTransaction.commit();
     }
 
