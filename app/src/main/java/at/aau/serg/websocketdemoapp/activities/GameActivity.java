@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
 import at.aau.serg.websocketdemoapp.R;
@@ -23,6 +27,9 @@ public class GameActivity extends AppCompatActivity {
     DrawCardMessage drawCardMessage;
     Gson gson =  new Gson();
     Button button;
+
+    public Rabbit1 rabbit1;
+
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -47,6 +54,14 @@ public class GameActivity extends AppCompatActivity {
         button.setOnClickListener((view) -> {
             //sendMessageDraw();
         });
+
+        //Test for drawing a card
+        button.setOnClickListener((view) -> {
+            String serverResponse = "1";
+            showPopup(serverResponse);
+        });
+
+
     }
 
     private void connectToServer() {
@@ -59,6 +74,20 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         });
     }
+
+    private void showPopup(String serverResponse) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Handle default case
+        if (serverResponse.equals("1")) {
+            rabbit1 = new Rabbit1();
+            fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+        }
+
+        fragmentTransaction.commit();
+    }
+
     /*private void sendMessageDraw() {
         drawCardMessage.setMessageType(MessageType.DRAW_CARD);
         drawCardMessage.setPlayerID("");

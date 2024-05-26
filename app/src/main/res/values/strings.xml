@@ -16,4 +16,6 @@
     <string name="guess_cheater">Guess Cheater</string>
     <string name="chat">Chat</string>
     <string name="remaining_rabbits">Remaining rabbits</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
