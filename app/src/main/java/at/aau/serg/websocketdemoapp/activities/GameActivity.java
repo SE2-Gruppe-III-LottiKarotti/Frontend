@@ -13,7 +13,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import at.aau.serg.websocketdemoapp.fragments.Carrot;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
+import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
+import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
 
@@ -32,6 +35,12 @@ public class GameActivity extends AppCompatActivity {
     Button button;
 
     public Rabbit1 rabbit1;
+
+    public Rabbit2 rabbit2;
+
+    public Rabbit3 rabbit3;
+
+    public Carrot carrot;
 
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
