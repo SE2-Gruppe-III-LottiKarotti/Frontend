@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#00FFFFFF"
-    android:backgroundTint="#00FFFFFF"
+    android:background="@color/gray"
+    android:backgroundTint="@color/gray"
     tools:context=".fragments.Rabbit1">
 
     <ImageView
