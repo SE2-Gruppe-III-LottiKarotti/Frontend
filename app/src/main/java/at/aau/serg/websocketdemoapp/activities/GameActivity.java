@@ -2,10 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -24,10 +21,9 @@ import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.msg.MessageType;
+//import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
@@ -38,13 +34,13 @@ public class GameActivity extends AppCompatActivity {
     Gson gson =  new Gson();
     Button button;
 
-    public Rabbit1 rabbit1;
+    private Rabbit1 rabbit1;
 
-    public Rabbit2 rabbit2;
+    private Rabbit2 rabbit2;
 
-    public Rabbit3 rabbit3;
+    private Rabbit3 rabbit3;
 
-    public Carrot carrot;
+    private Carrot carrot;
 
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -72,7 +68,7 @@ public class GameActivity extends AppCompatActivity {
         });
 
         //Test for drawing a card
-        button.setOnClickListener((view) -> {
+        button.setOnClickListener(view -> {
             SecureRandom rand = new SecureRandom();
             int random = rand.nextInt(4)+1;
             String serverResponse = Integer.toString(random);
