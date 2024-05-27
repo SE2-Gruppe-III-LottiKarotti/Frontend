@@ -23,6 +23,7 @@ import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -72,7 +73,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Test for drawing a card
         button.setOnClickListener((view) -> {
-            Random rand = new Random();
+            SecureRandom rand = new SecureRandom();
             int random = rand.nextInt(4)+1;
             String serverResponse = Integer.toString(random);
             showPopup(serverResponse);
