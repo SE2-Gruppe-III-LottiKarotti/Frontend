@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import java.security.SecureRandom;
 
 import at.aau.serg.websocketdemoapp.R;
-//import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
@@ -33,14 +32,6 @@ public class GameActivity extends AppCompatActivity {
     DrawCardMessage drawCardMessage;
     Gson gson =  new Gson();
     Button button;
-
-    private Rabbit1 rabbit1;
-
-    private Rabbit2 rabbit2;
-
-    private Rabbit3 rabbit3;
-
-    private Carrot carrot;
 
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -97,19 +88,19 @@ public class GameActivity extends AppCompatActivity {
         if (serverResponse != null) {
             switch (serverResponse) {
                 case "1":
-                    rabbit1 = new Rabbit1();
+                    Rabbit1 rabbit1 = new Rabbit1();
                     fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
                     break;
                 case "2":
-                    rabbit2 = new Rabbit2();
+                    Rabbit2 rabbit2 = new Rabbit2();
                     fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
                     break;
                 case "3":
-                    rabbit3 = new Rabbit3();
+                    Rabbit3 rabbit3 = new Rabbit3();
                     fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
                     break;
                 case "4":
-                    carrot = new Carrot();
+                    Carrot carrot = new Carrot();
                     fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
                     break;
                 default:
