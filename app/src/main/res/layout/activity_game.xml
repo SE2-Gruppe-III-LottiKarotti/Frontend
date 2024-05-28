@@ -333,6 +333,13 @@
             android:background="#00FFFFFF"
             app:srcCompat="@drawable/carrot" />
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainer"
+            android:layout_width="240dp"
+            android:layout_height="275dp"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"/>
+
     </RelativeLayout>
 
     <RelativeLayout

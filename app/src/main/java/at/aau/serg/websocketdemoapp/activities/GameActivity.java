@@ -10,10 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import at.aau.serg.websocketdemoapp.fragments.Carrot;
+import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
+import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
+import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
+
+import java.security.SecureRandom;
+
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
@@ -23,6 +32,7 @@ public class GameActivity extends AppCompatActivity {
     DrawCardMessage drawCardMessage;
     Gson gson =  new Gson();
     Button button;
+
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -47,6 +57,16 @@ public class GameActivity extends AppCompatActivity {
         button.setOnClickListener((view) -> {
             //sendMessageDraw();
         });
+
+        //Test for drawing a card
+        button.setOnClickListener(view -> {
+            SecureRandom rand = new SecureRandom();
+            int random = rand.nextInt(4)+1;
+            String serverResponse = Integer.toString(random);
+            showPopup(serverResponse);
+        });
+
+
     }
 
     private void connectToServer() {
@@ -59,6 +79,37 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         });
     }
+
+    private void showPopup(String serverResponse) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Handle default case
+        if (serverResponse != null) {
+            switch (serverResponse) {
+                case "1":
+                    Rabbit1 rabbit1 = new Rabbit1();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+                    break;
+                case "2":
+                    Rabbit2 rabbit2 = new Rabbit2();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
+                    break;
+                case "3":
+                    Rabbit3 rabbit3 = new Rabbit3();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
+                    break;
+                case "4":
+                    Carrot carrot = new Carrot();
+                    fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
+                    break;
+                default:
+                    break;
+            }
+        }
+        fragmentTransaction.commit();
+    }
+
     /*private void sendMessageDraw() {
         drawCardMessage.setMessageType(MessageType.DRAW_CARD);
         drawCardMessage.setPlayerID("");
