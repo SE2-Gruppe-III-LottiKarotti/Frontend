@@ -5,52 +5,90 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".activities.StartActivity">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/img"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/start_logo"
+        app:layout_constraintBottom_toTopOf="@id/linear_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/buttonOpenRoom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="OpenRoom"
-        app:layout_constraintTop_toBottomOf="@id/imageView"
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="390dp"
+        android:layout_height="250dp"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
-    <Button
-        android:id="@+id/buttonJoinRoom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="JoinRoom"
-        app:layout_constraintTop_toBottomOf="@id/buttonOpenRoom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/buttonOpenRoom"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/orange"
+            android:text="@string/openroom"
+            android:textColor="@color/darkGray"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/buttonRejoinRoom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="RejoinRoom"
-        app:layout_constraintTop_toBottomOf="@id/buttonJoinRoom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/buttonJoinRoom"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonOpenRoom"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/orange"
+            android:text="JoinRoom"
+            android:textColor="@color/darkGray"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonOpenRoom" />
 
-    <Button
-        android:id="@+id/buttonInstructions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Instructions"
-        app:layout_constraintTop_toBottomOf="@id/buttonRejoinRoom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/buttonRejoinRoom"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/orange"
+            android:text="RejoinRoom"
+            android:textColor="@color/darkGray"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonJoinRoom" />
+
+        <Button
+            android:id="@+id/buttonInstructions"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/orange"
+            android:text="Instructions"
+            android:textColor="@color/darkGray"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonRejoinRoom" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
