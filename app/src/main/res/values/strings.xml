@@ -19,4 +19,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="openroom">OpenRoom</string>
+    <string name="game_settings">Game Settings</string>
+    <string name="enter_room_name">Enter room name</string>
+    <string name="enter_player_name">Enter player name</string>
+    <string name="open_roomAndStart">Open Room</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="response">Response</string>
+    <string name="player_name">Player name:</string>
+    <string name="number_of_players">Number of players:</string>
+    <string name="room_name">Room name:</string>
 </resources>
