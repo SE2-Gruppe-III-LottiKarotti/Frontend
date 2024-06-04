@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="15dp"
         android:text="@string/round_1"
         android:textColor="@color/orange"
         android:textSize="26sp"
@@ -42,29 +42,44 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/relative_layout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="2dp">
 
         <Button
             android:id="@+id/btn_draw"
-            android:layout_width="175dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="10dp"
             android:backgroundTint="@color/orange"
             android:hint="@string/draw_card"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_guess"
-            android:layout_width="175dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/btn_draw"
             android:backgroundTint="@color/orange"
             android:hint="@string/guess_cheater"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="16dp"
             android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinnerDrawMode"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/btn_draw"/>
+
+        <Spinner
+            android:id="@+id/spinnerGuessCheater"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@id/spinnerDrawMode"
+            android:layout_below="@+id/btn_guess"/>
     </RelativeLayout>
 
     <RelativeLayout

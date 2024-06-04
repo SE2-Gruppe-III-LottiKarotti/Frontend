@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +44,8 @@ public class GameActivity extends AppCompatActivity {
     Gson gson =  new Gson();
     Button button;
 
+    Spinner spinner;
+
     SharedPreferences sharedPreferences;
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -66,6 +70,8 @@ public class GameActivity extends AppCompatActivity {
 
         drawCardMessage =  new DrawCardMessage();
 
+        spinner = findViewById(R.id.spinnerDrawMode);
+
         button.setOnClickListener((view) -> {
             sendMessageDraw();
         });
@@ -80,6 +86,10 @@ public class GameActivity extends AppCompatActivity {
             showPopup(serverResponse);
         });
          */
+
+        String[] drawOptions = new String [] {"random", "1", "2", "3", "Karotte"};
+        ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, drawOptions);
+        spinner.setAdapter(playerAdapter);
 
         ImageView rabbit1 = findViewById(R.id.rabbit1);
         ImageView rabbit2 = findViewById(R.id.rabbit2);
