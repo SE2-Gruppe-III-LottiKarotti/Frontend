@@ -178,8 +178,18 @@ public class OpenRoomActivity extends AppCompatActivity {
 
                         responseMessage.setText(jsonString);
 
+                        String roomId = openRoomMessage.getRoomId();
+                        String roomName = openRoomMessage.getRoomName();
+                        String playerId = openRoomMessage.getPlayerId();
+                        String playerName = openRoomMessage.getPlayerName();
+
+
                         // Redirect to the next activity
-                        Intent intent = new Intent(OpenRoomActivity.this, GameboardActivityTest.class);
+                        Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
+                        intent.putExtra("roomId", roomId);
+                        intent.putExtra("roomName", roomName);
+                        intent.putExtra("playerId", playerId);
+                        intent.putExtra("playerName", playerName);
                         startActivity(intent);
                         finish(); // Close this activity
                     });

@@ -2,7 +2,10 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -23,6 +26,7 @@ import com.google.gson.Gson;
 import java.security.SecureRandom;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
@@ -66,59 +70,6 @@ public class GameActivity extends AppCompatActivity {
             showPopup(serverResponse);
         });
 
-
-    }
-
-    private void connectToServer() {
-        networkHandler.connectToServer(this::receiveDrawMessage);
-    }
-
-    private void receiveDrawMessage(String message) {
-        runOnUiThread(() -> {
-            Log.d("DRAW CARD", message);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        });
-    }
-
-    private void showPopup(String serverResponse) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        // Handle default case
-        if (serverResponse != null) {
-            switch (serverResponse) {
-                case "1":
-                    Rabbit1 rabbit1 = new Rabbit1();
-                    fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
-                    break;
-                case "2":
-                    Rabbit2 rabbit2 = new Rabbit2();
-                    fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
-                    break;
-                case "3":
-                    Rabbit3 rabbit3 = new Rabbit3();
-                    fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
-                    break;
-                case "4":
-                    Carrot carrot = new Carrot();
-                    fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
-                    break;
-                default:
-                    break;
-            }
-        }
-        fragmentTransaction.commit();
-    }
-
-    /*private void sendMessageDraw() {
-        drawCardMessage.setMessageType(MessageType.DRAW_CARD);
-        drawCardMessage.setPlayerID("");
-        drawCardMessage.setRoomID("");
-
-        networkHandler.sendMessageToServer(gson.toJson(drawCardMessage));
-    }*/
-
-/*
         ImageView rabbit1 = findViewById(R.id.rabbit1);
         ImageView rabbit2 = findViewById(R.id.rabbit2);
         ImageView rabbit3 = findViewById(R.id.rabbit3);
@@ -183,6 +134,68 @@ public class GameActivity extends AppCompatActivity {
                 moveRabbit(rabbit4, currentRabbitPosition(4), 4);
             }
         });
+
+        String roomId = getIntent().getStringExtra("roomId");
+        String roomName = getIntent().getStringExtra("roomName");
+        String playerId = getIntent().getStringExtra("playerId");
+        String playerName = getIntent().getStringExtra("playerName");
+
+        Log.d("GameActivity", "roomId: " + roomId);
+        Log.d("GameActivity", "roomName: " + roomName);
+        Log.d("GameActivity", "playerId: " + playerId);
+        Log.d("GameActivity", "playerName: " + playerName);
+
+        Toast.makeText(GameActivity.this, "Info: " + roomId + roomName + playerId + playerName, Toast.LENGTH_LONG).show();
+    }
+
+
+    private void connectToServer() {
+        networkHandler.connectToServer(this::receiveDrawMessage);
+    }
+
+    private void receiveDrawMessage(String message) {
+        runOnUiThread(() -> {
+            Log.d("DRAW CARD", message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private void showPopup(String serverResponse) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Handle default case
+        if (serverResponse != null) {
+            switch (serverResponse) {
+                case "1":
+                    Rabbit1 rabbit1 = new Rabbit1();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+                    break;
+                case "2":
+                    Rabbit2 rabbit2 = new Rabbit2();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
+                    break;
+                case "3":
+                    Rabbit3 rabbit3 = new Rabbit3();
+                    fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
+                    break;
+                case "4":
+                    Carrot carrot = new Carrot();
+                    fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
+                    break;
+                default:
+                    break;
+            }
+        }
+        fragmentTransaction.commit();
+    }
+
+    private void sendMessageDraw() {
+        drawCardMessage.setMessageType(MessageType.DRAW_CARD);
+        drawCardMessage.setPlayerID("");
+        drawCardMessage.setRoomID("");
+
+        networkHandler.sendMessageToServer(gson.toJson(drawCardMessage));
     }
 
     private int currentRabbitPosition(int rabbitNumber) {
@@ -192,7 +205,7 @@ public class GameActivity extends AppCompatActivity {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
     private boolean isFieldFree (int fieldToGo) {
@@ -200,32 +213,52 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void moveRabbit(ImageView clickedRabbit, int currentPosition, int rabbitNumber) {
-        Random rand = new Random();
+        SecureRandom rand = new SecureRandom();
         int fieldToGo = rand.nextInt(4)+1;
 
         if(fieldToGo + currentPosition >= fields.length){
-            fieldToGo = rand.nextInt(fields.length - currentPosition) +1;
+            fieldToGo = rand.nextInt(fields.length - currentPosition);
         }
 
         ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
         ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
         currentParent.removeView(clickedRabbit);
 
-        // Add the rabbit ImageView to the parent layout of the fields
-        parentLayout.addView(clickedRabbit);
+        // Add the rabbit ImageView to the parent layout of the field
+        if(currentPosition==-1) {
+            int rabbitWidth = clickedRabbit.getWidth();
+            int rabbitHeight = clickedRabbit.getHeight();
+            int fieldWidth = fields[0].getWidth();
+            int fieldHeight = fields[0].getHeight();
+            while(!(isFieldFree(currentPosition+fieldToGo))) {
+                int newTarget = currentPosition+fieldToGo;
 
-        while(!(isFieldFree(currentPosition+fieldToGo))) {
-            int newTarget = currentPosition+fieldToGo;
+                fieldToGo++;
+            }
+            int xPos = (int)fields[currentPosition + fieldToGo].getX() + (fieldWidth - rabbitWidth) / 2;
+            int yPos = (int)fields[currentPosition + fieldToGo].getY() + (fieldHeight - rabbitHeight) / 2;
 
-            fieldToGo++;
+            // Add the rabbit ImageView to the parent layout of the fields
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
+            layoutParams.leftMargin = xPos;
+            layoutParams.topMargin = yPos;
+            parentLayout.addView(clickedRabbit, layoutParams);
         }
+        else {
+            parentLayout.addView(clickedRabbit);
+            while(!(isFieldFree(currentPosition+fieldToGo))) {
+                int newTarget = currentPosition+fieldToGo;
 
-        float targetX = fields[currentPosition+fieldToGo].getX();
-        float targetY = fields[currentPosition+fieldToGo].getY();
-        clickedRabbit.setX(targetX);
-        clickedRabbit.setY(targetY);
+                fieldToGo++;
+            }
 
+            float targetX = fields[currentPosition+fieldToGo].getX();
+            float targetY = fields[currentPosition+fieldToGo].getY();
+            clickedRabbit.setX(targetX);
+            clickedRabbit.setY(targetY);
+        }
+        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
 
-        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;*/
-
+    }
 }
+
