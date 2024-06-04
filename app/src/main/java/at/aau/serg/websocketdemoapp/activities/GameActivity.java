@@ -1,5 +1,9 @@
 package at.aau.serg.websocketdemoapp.activities;
 
+import static at.aau.serg.websocketdemoapp.msg.DrawCardMessage.ActionTypeDrawCard.ASK_FOR_CARD;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +31,7 @@ import java.security.SecureRandom;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
+import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
@@ -37,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
     Gson gson =  new Gson();
     Button button;
 
+    SharedPreferences sharedPreferences;
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -51,6 +57,8 @@ public class GameActivity extends AppCompatActivity {
             return insets;
         });
 
+        sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
+
         networkHandler = new WebSocketClient();
         connectToServer();
 
@@ -59,16 +67,19 @@ public class GameActivity extends AppCompatActivity {
         drawCardMessage =  new DrawCardMessage();
 
         button.setOnClickListener((view) -> {
-            //sendMessageDraw();
+            sendMessageDraw();
         });
 
         //Test for drawing a card
+
+        /*
         button.setOnClickListener(view -> {
             SecureRandom rand = new SecureRandom();
             int random = rand.nextInt(4)+1;
             String serverResponse = Integer.toString(random);
             showPopup(serverResponse);
         });
+         */
 
         ImageView rabbit1 = findViewById(R.id.rabbit1);
         ImageView rabbit2 = findViewById(R.id.rabbit2);
@@ -140,12 +151,14 @@ public class GameActivity extends AppCompatActivity {
         String playerId = getIntent().getStringExtra("playerId");
         String playerName = getIntent().getStringExtra("playerName");
 
-        Log.d("GameActivity", "roomId: " + roomId);
-        Log.d("GameActivity", "roomName: " + roomName);
-        Log.d("GameActivity", "playerId: " + playerId);
-        Log.d("GameActivity", "playerName: " + playerName);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Toast.makeText(GameActivity.this, "Info: " + roomId + roomName + playerId + playerName, Toast.LENGTH_LONG).show();
+        editor.putString("roomId", roomId);
+        editor.putString("roomName", roomName);
+        editor.putString("playerId", playerId);
+        editor.putString("playerName", playerName);
+
+        editor.apply();
     }
 
 
@@ -153,11 +166,22 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.connectToServer(this::receiveDrawMessage);
     }
 
-    private void receiveDrawMessage(String message) {
-        runOnUiThread(() -> {
-            Log.d("DRAW CARD", message);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectToServer();
+    }
+
+
+    private <T> void receiveDrawMessage(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+
+            DrawCardMessage drawCardMessage1 = gson.fromJson(jsonString, DrawCardMessage.class);
+            String serverResponse = drawCardMessage1.getCard();
+
+            showPopup(serverResponse);
+        }
     }
 
     private void showPopup(String serverResponse) {
@@ -192,10 +216,13 @@ public class GameActivity extends AppCompatActivity {
 
     private void sendMessageDraw() {
         drawCardMessage.setMessageType(MessageType.DRAW_CARD);
-        drawCardMessage.setPlayerID("");
-        drawCardMessage.setRoomID("");
+        drawCardMessage.setPlayerID(sharedPreferences.getString("playerId", null));
+        drawCardMessage.setRoomID(sharedPreferences.getString("roomId", null));
+        drawCardMessage.setCard("random");
+        drawCardMessage.setActionTypeDrawCard(ASK_FOR_CARD);
 
-        networkHandler.sendMessageToServer(gson.toJson(drawCardMessage));
+        String jsonMessage = new Gson().toJson(drawCardMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
     }
 
     private int currentRabbitPosition(int rabbitNumber) {
