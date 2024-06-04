@@ -8,12 +8,12 @@
     tools:context=".activities.GameActivity">
 
     <TextView
-        android:id="@+id/texttitle"
+        android:id="@+id/roomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:text="@string/round_1"
+        android:text="Room Name"
         android:textColor="@color/orange"
         android:textSize="26sp"
         android:textStyle="bold" />
@@ -22,13 +22,13 @@
         android:id="@+id/relative_layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/texttitle"
+        android:layout_below="@+id/roomName"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp">
 
         <TextView
-            android:id="@+id/text_player"
-            android:layout_width="250dp"
+            android:id="@+id/playerTurn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/player_it_s_your_turn"
             android:textAlignment="center"
@@ -392,7 +392,7 @@
 
         <TextView
             android:id="@+id/playerNameInput"
-            android:hint="MaxMüller123"
+            android:hint="TestPlayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"

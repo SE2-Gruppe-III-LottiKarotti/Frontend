@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,12 +42,17 @@ public class GameActivity extends AppCompatActivity {
 
     WebSocketClient networkHandler;
     DrawCardMessage drawCardMessage;
+    DrawCardMessage drawCardMessageReceived;
     Gson gson =  new Gson();
     Button button;
 
     Spinner spinner;
 
     SharedPreferences sharedPreferences;
+
+    TextView playerName1;
+    TextView roomNameTitle;
+    TextView playerTurn;
 
     int[] rabbitPosition = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -70,24 +76,22 @@ public class GameActivity extends AppCompatActivity {
 
         drawCardMessage =  new DrawCardMessage();
 
+        drawCardMessageReceived = new DrawCardMessage();
+
         spinner = findViewById(R.id.spinnerDrawMode);
+
+        playerName1 = findViewById(R.id.playerNameInput);
+
+        roomNameTitle = findViewById(R.id.roomName);
+
+        playerTurn = findViewById(R.id.playerTurn);
+
 
         button.setOnClickListener((view) -> {
             sendMessageDraw();
         });
 
-        //Test for drawing a card
-
-        /*
-        button.setOnClickListener(view -> {
-            SecureRandom rand = new SecureRandom();
-            int random = rand.nextInt(4)+1;
-            String serverResponse = Integer.toString(random);
-            showPopup(serverResponse);
-        });
-         */
-
-        String[] drawOptions = new String [] {"random", "1", "2", "3", "Karotte"};
+        String[] drawOptions = new String [] {"random", "1", "2", "3", "carrot"};
         ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, drawOptions);
         spinner.setAdapter(playerAdapter);
 
@@ -165,10 +169,15 @@ public class GameActivity extends AppCompatActivity {
 
         editor.putString("roomId", roomId);
         editor.putString("roomName", roomName);
-        editor.putString("playerId", playerId);
-        editor.putString("playerName", playerName);
+        editor.putString("playerId1", playerId);
+        editor.putString("playerName1", playerName);
 
         editor.apply();
+
+        playerName1.setText(getIntent().getStringExtra("playerName"));
+        roomNameTitle.setText(getIntent().getStringExtra("roomName"));
+        playerTurn.setText(getIntent().getStringExtra("playerName") + " it's your turn");
+
     }
 
 
@@ -187,8 +196,8 @@ public class GameActivity extends AppCompatActivity {
         if (message instanceof String) {
             String jsonString = (String) message;
 
-            DrawCardMessage drawCardMessage1 = gson.fromJson(jsonString, DrawCardMessage.class);
-            String serverResponse = drawCardMessage1.getCard();
+            drawCardMessageReceived = gson.fromJson(jsonString, DrawCardMessage.class);
+            String serverResponse = drawCardMessageReceived.getCard();
 
             showPopup(serverResponse);
         }
@@ -213,7 +222,7 @@ public class GameActivity extends AppCompatActivity {
                     Rabbit3 rabbit3 = new Rabbit3();
                     fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
                     break;
-                case "4":
+                case "carrot":
                     Carrot carrot = new Carrot();
                     fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
                     break;
@@ -226,9 +235,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void sendMessageDraw() {
         drawCardMessage.setMessageType(MessageType.DRAW_CARD);
-        drawCardMessage.setPlayerID(sharedPreferences.getString("playerId", null));
+        drawCardMessage.setPlayerID(sharedPreferences.getString("playerId1", null));
         drawCardMessage.setRoomID(sharedPreferences.getString("roomId", null));
-        drawCardMessage.setCard("random");
+        drawCardMessage.setCard(spinner.getSelectedItem().toString());
         drawCardMessage.setActionTypeDrawCard(ASK_FOR_CARD);
 
         String jsonMessage = new Gson().toJson(drawCardMessage);
@@ -251,7 +260,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void moveRabbit(ImageView clickedRabbit, int currentPosition, int rabbitNumber) {
         SecureRandom rand = new SecureRandom();
-        int fieldToGo = rand.nextInt(4)+1;
+        int fieldToGo = Integer.parseInt(drawCardMessageReceived.getCard());
 
         if(fieldToGo + currentPosition >= fields.length){
             fieldToGo = rand.nextInt(fields.length - currentPosition);
