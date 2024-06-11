@@ -57,7 +57,9 @@ public class WebSocketClient {
         webSocket.send(msg);
     }
 
+    /*
     @Override
+
     protected void finalize() throws Throwable {
         try {
             webSocket.close(1000, "Closing");
@@ -65,6 +67,7 @@ public class WebSocketClient {
             super.finalize();
         }
     }
+    */
 
     // Simple method to demonstrate unit testing and test coverage with sonarcloud
     public static String concatenateStrings(String first, String second) {

@@ -12,6 +12,7 @@ public class DrawCardMessage {
     private String roomID;
     private String playerID;
     private String card;
+    private String nextPlayerId;
     private ActionTypeDrawCard actionTypeDrawCard;
 
     /*message maybe need to be broadcasted*/
@@ -62,4 +63,9 @@ public class DrawCardMessage {
     public void setActionTypeDrawCard(ActionTypeDrawCard actionTypeDrawCard) {
         this.actionTypeDrawCard = actionTypeDrawCard;
     }
+    public String getNextPlayerId() {
+        return nextPlayerId;
+    }
+
+
 }
