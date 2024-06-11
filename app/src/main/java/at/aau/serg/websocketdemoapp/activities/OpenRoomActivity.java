@@ -60,8 +60,7 @@ public class OpenRoomActivity extends AppCompatActivity {
             return insets;
         });
 
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
+        sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
 
         editTextRoomName = findViewById(R.id.editTextRoomName);
         spinnerNumPlayers = findViewById(R.id.spinnerNumPlayers);
@@ -69,7 +68,6 @@ public class OpenRoomActivity extends AppCompatActivity {
         buttonOpenRoomNow = findViewById(R.id.buttonOpenRoomNow);
         backButton = findViewById(R.id.backButton);
         responseMessage = findViewById(R.id.textViewResponse);
-
 
         String[] playerOptions = new String [] {"2", "3", "4"};
         ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, playerOptions);
@@ -183,13 +181,17 @@ public class OpenRoomActivity extends AppCompatActivity {
                         String playerId = openRoomMessage.getPlayerId();
                         String playerName = openRoomMessage.getPlayerName();
 
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("roomId", roomId);
+                        editor.putString("roomName", roomName);
+                        editor.putString("playerId", playerId);
+                        editor.putString("playerName", playerName);
+                        editor.putString("playerToStart", playerId);
+                        editor.apply();
 
                         // Redirect to the next activity
                         Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
-                        intent.putExtra("roomId", roomId);
-                        intent.putExtra("roomName", roomName);
-                        intent.putExtra("playerId", playerId);
-                        intent.putExtra("playerName", playerName);
+
                         startActivity(intent);
                         finish(); // Close this activity
                     });

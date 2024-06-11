@@ -12,6 +12,7 @@ public class JoinRoomMessage {
     String playerName;
     ActionTypeJoinRoom actionTypeJoinRoom;
 
+
     public enum ActionTypeJoinRoom {
         /**join room*/
         JOIN_ROOM_ASK,

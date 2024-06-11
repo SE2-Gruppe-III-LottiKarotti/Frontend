@@ -1,10 +1,7 @@
 package at.aau.serg.websocketdemoapp.activities;
 
-import static at.aau.serg.websocketdemoapp.msg.JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR;
-import static at.aau.serg.websocketdemoapp.msg.JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_OK;
-import static at.aau.serg.websocketdemoapp.msg.MessageType.JOIN_ROOM;
-import static at.aau.serg.websocketdemoapp.msg.MessageType.LIST_ROOMS;
-
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -43,7 +40,6 @@ public class JoinRoomActivity extends AppCompatActivity {
     ListView listView;
     //ArrayAdapter<String> roomAdapter;
     ArrayAdapter<String> adapter;
-    ArrayList<RoomInfo> roomInfoList;
 
     EditText roomNameEditText;
     EditText playerNameEditText;
@@ -52,9 +48,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     Button backButton;
 
-    String messageIdentifierJoinRoom;
-
-    String roomName;
+    SharedPreferences sharedPreferences;
 
     private final Gson gson = new Gson();
 
@@ -70,6 +64,7 @@ public class JoinRoomActivity extends AppCompatActivity {
             return insets;
         });
 
+        sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
 
         listView = findViewById(R.id.roomListView);
         playerNameEditText = findViewById(R.id.playerNameEditText);
@@ -141,7 +136,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         JoinRoomMessage joinRoomMsg = new JoinRoomMessage();
         joinRoomMsg.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ASK);
-        String roomNameToTransfer = roomNameEditText.getText().toString();;
+        String roomNameToTransfer = roomNameEditText.getText().toString();
         //default value of default db room
         //dummy val
         if (roomNameEditText.getText().toString().isEmpty()) {
@@ -189,7 +184,18 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     private void handleJoinRoomMessage(JoinRoomMessage message) {
 
-        //
+        String roomId = message.getRoomId();
+        String roomName = message.getRoomName();
+        String playerId = message.getPlayerId();
+        String playerName = message.getPlayerName();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("roomId", roomId);
+        editor.putString("roomName", roomName);
+        editor.putString("playerId", playerId);
+        editor.putString("playerName", playerName);
+        editor.apply();
+
         switch(message.getActionTypeJoinRoom()) {
             case JOIN_ROOM_OK:
                 //CustomSharedPreferences.saveRoomIDToSharedPreferences(this, message.getRoomId());
@@ -201,9 +207,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
 
                 });
-                Intent intent = new Intent(JoinRoomActivity.this, GameboardActivityTest.class);
-                //intent.putExtra("roomId", message.getRoomId());
-                //intent.putExtra("playerId", message.getPlayerId());
+                Intent intent = new Intent(JoinRoomActivity.this, GameActivity.class);
                 startActivity(intent);
                 break;
             case JOIN_ROOM_ERR:
