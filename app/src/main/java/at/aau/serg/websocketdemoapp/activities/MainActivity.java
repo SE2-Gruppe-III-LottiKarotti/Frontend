@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void connectToWebSocketServer() {
         // register a handler for received messages when setting up the connection
-        networkHandler.connectToServer(this::messageReceivedFromServer);
+        networkHandler.addMessageHandler("Main", this::messageReceivedFromServer);
+        networkHandler.connectToServer();
     }
 
     private void sendMessage() {
