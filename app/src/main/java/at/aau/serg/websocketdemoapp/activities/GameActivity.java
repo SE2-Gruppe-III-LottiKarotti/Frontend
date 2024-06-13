@@ -27,7 +27,9 @@ import at.aau.serg.websocketdemoapp.fragments.Carrot;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
+import at.aau.serg.websocketdemoapp.game.Field;
 import at.aau.serg.websocketdemoapp.game.Gameboard;
+import at.aau.serg.websocketdemoapp.game.PlayingPiece;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -39,34 +41,55 @@ import java.util.Objects;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
+import at.aau.serg.websocketdemoapp.msg.MoveMessage;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class GameActivity extends AppCompatActivity {
+    //Client/Server variables
     WebSocketClient networkHandler;
+    Gson gson = new Gson();
     DrawCardMessage drawCardMessage;
     DrawCardMessage drawCardMessageReceived;
     GameMessage gameMessage;
     GameMessage gameMessageReceived;
-    Gson gson = new Gson();
-    Button button;
-    Button buttonC;
+    MoveMessage moveMessage;
+    MoveMessage moveMessageReceived;
 
-    Spinner spinner;
+    //Android variables
+    Button buttonDraw;
+    Button buttonStart;
+    Spinner spinnerCheat;
+    TextView playerNameView;
+    TextView roomNameTitleView;
+    TextView playerTurnView;
+    ImageView rabbit1;
+    ImageView rabbit2;
+    ImageView rabbit3;
+    ImageView rabbit4;
 
+    //Data variables
     SharedPreferences sharedPreferences;
 
-    TextView playerName1;
-    TextView roomNameTitle;
-    TextView playerTurn;
+    //Player variables
     private String currentPlayerId;
     private String nextPlayerId;
     private String roomId;
     private String roomName;
     private String playerId;
     private String playerName;
+
+    //Game variables
     private ImageView[] fields = new ImageView[27];
-    int[] rabbitPosition;
+    Field[] rabbitPosition;
+    PlayingPiece playingPiece1;
+
+    //Boolean variables
+    boolean firstClick1 = true;
+    boolean FirstClick2 = false;
+    boolean firstClick3 = false;
+    boolean isFirstClick4 = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,28 +105,28 @@ public class GameActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
 
         networkHandler = new WebSocketClient();
-
         networkHandler.addMessageHandler("draw_card", this::receiveDrawMessage);
         networkHandler.addMessageHandler("game", this::receiveGameMessage);
-
+        networkHandler.addMessageHandler("move", this::receiveMoveMessage);
         networkHandler.connectToServer();
 
-        button = findViewById(R.id.btn_draw);
-
-        buttonC = findViewById(R.id.btn_chat);
-
         drawCardMessage = new DrawCardMessage();
-        gameMessage = new GameMessage();
-
         drawCardMessageReceived = new DrawCardMessage();
+        gameMessage = new GameMessage();
+        gameMessageReceived = new GameMessage();
+        moveMessage = new MoveMessage();
+        moveMessageReceived = new MoveMessage();
 
-        spinner = findViewById(R.id.spinnerDrawMode);
+        buttonDraw = findViewById(R.id.btn_draw);
+        buttonStart = findViewById(R.id.btn_chat);
+        spinnerCheat = findViewById(R.id.spinnerDrawMode);
+        playerNameView = findViewById(R.id.playerNameInput);
+        roomNameTitleView = findViewById(R.id.roomName);
+        playerTurnView = findViewById(R.id.playerTurn);
 
-        playerName1 = findViewById(R.id.playerNameInput);
-
-        roomNameTitle = findViewById(R.id.roomName);
-
-        playerTurn = findViewById(R.id.playerTurn);
+        String[] drawOptions = new String[]{"RANDOM", "ONE", "TWO", "THREE", "CARROT"};
+        ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, drawOptions);
+        spinnerCheat.setAdapter(playerAdapter);
 
         roomId = sharedPreferences.getString("roomId", null);
         roomName = sharedPreferences.getString("roomName", null);
@@ -111,27 +134,15 @@ public class GameActivity extends AppCompatActivity {
         playerName = sharedPreferences.getString("playerName", null);
         currentPlayerId = sharedPreferences.getString("playerToStart", null);
 
-        playerName1.setText(playerName);
-        roomNameTitle.setText(roomName);
+        playerNameView.setText(playerName);
+        roomNameTitleView.setText(roomName);
 
         updatePlayerTurnText();
 
-        button.setOnClickListener((view) -> {
-            sendMessageDraw();
-        });
-
-        buttonC.setOnClickListener((view) -> {
-            sendMessageGame();
-        });
-
-        String[] drawOptions = new String[]{"random", "1", "2", "3", "carrot"};
-        ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, drawOptions);
-        spinner.setAdapter(playerAdapter);
-
-        ImageView rabbit1 = findViewById(R.id.rabbit1);
-        ImageView rabbit2 = findViewById(R.id.rabbit2);
-        ImageView rabbit3 = findViewById(R.id.rabbit3);
-        ImageView rabbit4 = findViewById(R.id.rabbit4);
+        rabbit1 = findViewById(R.id.rabbit1);
+        rabbit2 = findViewById(R.id.rabbit2);
+        rabbit3 = findViewById(R.id.rabbit3);
+        rabbit4 = findViewById(R.id.rabbit4);
 
         ImageView field1 = findViewById(R.id.field1);
         ImageView field2 = findViewById(R.id.field2);
@@ -165,13 +176,25 @@ public class GameActivity extends AppCompatActivity {
                 field10, field11, field12, field13, field14, field15, field16, field17, field18, field19,
                 field20, field21, field22, field23, field24, field25, field26, field27};
 
+        //ClickListeners
+        buttonDraw.setOnClickListener((view) -> {
+            sendMessageDraw();
+        });
+
+        buttonStart.setOnClickListener((view) -> {
+            sendMessageGame();
+        });
+
+
         rabbit1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveRabbit(rabbit1, currentRabbitPosition(1), 1);
+                playingPiece1 = new PlayingPiece(1, playerId);
+                sendMessageMove(playingPiece1);
             }
         });
 
+/*
         rabbit2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,14 +210,15 @@ public class GameActivity extends AppCompatActivity {
         });
 
         rabbit4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveRabbit(rabbit4, currentRabbitPosition(4), 4);
-            }
-        });
+           @Override
+           public void onClick(View v) {
+           moveRabbit(rabbit4, currentRabbitPosition(4), 4);
+           }
+           });
+ */
+
         connectToServer();
     }
-
 
     private void connectToServer() {
         networkHandler.connectToServer();
@@ -209,13 +233,13 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             public void run() {
                 if (playerId.equals(currentPlayerId)) {
-                    playerTurn.setText(playerName + " ist dran");
-                    button.setEnabled(true);
-                    button.postInvalidate();
+                    playerTurnView.setText(playerName + " its your turn");
+                    buttonDraw.setEnabled(true);
+                    buttonDraw.postInvalidate();
                 } else {
-                    playerTurn.setText("Warten auf den anderen Spieler");
-                    button.setEnabled(false);
-                    button.postInvalidate();
+                    playerTurnView.setText("Waiting for the other player");
+                    buttonDraw.setEnabled(false);
+                    buttonDraw.postInvalidate();
                 }
             }
         });
@@ -240,8 +264,26 @@ public class GameActivity extends AppCompatActivity {
             String jsonString = (String) message;
 
             gameMessageReceived = gson.fromJson(jsonString, GameMessage.class);
+            rabbitPosition = gameMessageReceived.getFields();
 
-            Log.d("Gameboard", jsonString);
+            Log.d("Gameboard", Arrays.toString(rabbitPosition));
+        }
+    }
+
+    private <T> void receiveMoveMessage(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+
+            moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
+            rabbitPosition = moveMessageReceived.getFields();
+
+            Log.d("GameboardK", String.valueOf(firstClick1));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    moveRabbit(rabbit1, playingPiece1, firstClick1);
+                }
+            });
         }
     }
 
@@ -287,7 +329,7 @@ public class GameActivity extends AppCompatActivity {
             drawCardMessage.setMessageType(MessageType.DRAW_CARD);
             drawCardMessage.setPlayerID(playerId);
             drawCardMessage.setRoomID(roomId);
-            drawCardMessage.setCard(spinner.getSelectedItem().toString());
+            drawCardMessage.setCard(spinnerCheat.getSelectedItem().toString());
             drawCardMessage.setActionTypeDrawCard(ASK_FOR_CARD);
 
             String jsonMessage = new Gson().toJson(drawCardMessage);
@@ -300,6 +342,77 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.sendMessageToServer(jsonMessage);
     }
 
+    private void sendMessageMove(PlayingPiece playingPiece) {
+
+        String card = "";
+        switch (drawCardMessageReceived.getCard()) {
+            case "ONE":
+                card = "1";
+                break;
+            case "TWO":
+                card = "2";
+                break;
+            case "THREE":
+                card = "3";
+                break;
+            default:
+                break;
+        }
+        moveMessage.setCard(card);
+        moveMessage.setFields(rabbitPosition);
+        moveMessage.setSpielerId(playerId);
+        moveMessage.setRoomId(roomId);
+        moveMessage.setPlayingPiece(playingPiece);
+
+        String jsonMessage = new Gson().toJson(moveMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
+    }
+
+    private void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
+        ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
+        ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
+        currentParent.removeView(clickedRabbit);
+
+        Log.d("GameboardMove", Arrays.toString(rabbitPosition));
+        int count = -1;
+        for (Field field : rabbitPosition) {
+            count++;
+            Log.d("GameboardPiece", String.valueOf(playingPiece));
+            if(field.getPlayingPiece().equals(playingPiece))
+                break;
+        }
+        Log.d("Gameboard1", Arrays.toString(rabbitPosition));
+        Log.d("Gameboard", String.valueOf(playingPiece));
+        Log.d("Gameboard", String.valueOf(count));
+
+        Log.d("Gameboard", String.valueOf(firstClick));
+        if(firstClick) {
+            int rabbitWidth = clickedRabbit.getWidth();
+            int rabbitHeight = clickedRabbit.getHeight();
+            int fieldWidth = fields[count].getWidth();
+            int fieldHeight = fields[count].getHeight();
+
+            int xPos = (int)fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
+            int yPos = (int)fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
+
+            // Add the rabbit ImageView to the parent layout of the fields
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
+            layoutParams.leftMargin = xPos;
+            layoutParams.topMargin = yPos;
+            parentLayout.addView(clickedRabbit, layoutParams);
+            }
+
+            else {
+                parentLayout.addView(clickedRabbit);
+                float targetX = fields[count].getX();
+                float targetY = fields[count].getY();
+                clickedRabbit.setX(targetX);
+                clickedRabbit.setY(targetY);
+            }
+
+    }
+
+    /*
     private int currentRabbitPosition(int rabbitNumber) {
         for (int i = 0; i < rabbitPosition.length; i++) {
             if (rabbitPosition[i] == rabbitNumber) {
@@ -308,13 +421,17 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         return -1;
-    }
+    }*/
 
+    /*
     private boolean isFieldFree (int fieldToGo) {
         return rabbitPosition[fieldToGo] == 0;
-    }
+    }*/
 
+
+    /*
     private void moveRabbit(ImageView clickedRabbit, int currentPosition, int rabbitNumber) {
+
         SecureRandom rand = new SecureRandom();
         int fieldToGo;
         switch (drawCardMessageReceived.getCard()) {
@@ -339,7 +456,11 @@ public class GameActivity extends AppCompatActivity {
         ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
         currentParent.removeView(clickedRabbit);
 
+
         // Add the rabbit ImageView to the parent layout of the field
+        for (Field field : rabbitPosition) {
+        }
+
         if(currentPosition==-1) {
             int rabbitWidth = clickedRabbit.getWidth();
             int rabbitHeight = clickedRabbit.getHeight();
@@ -375,5 +496,6 @@ public class GameActivity extends AppCompatActivity {
         rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
 
     }
+*/
 }
 
