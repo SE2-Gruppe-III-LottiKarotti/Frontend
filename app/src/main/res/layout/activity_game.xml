@@ -446,6 +446,41 @@
             android:layout_below="@id/rabbits"
             android:layout_toEndOf="@id/rabbit3"/>
 
+        <ImageView
+            android:id="@+id/rabbit5"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="15dp"
+            app:srcCompat="@drawable/blue_rabbit"
+            android:layout_below="@id/rabbits" />
+
+        <ImageView
+            android:id="@+id/rabbit6"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/blue_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit1"/>
+
+        <ImageView
+            android:id="@+id/rabbit7"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/blue_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit2"/>
+
+        <ImageView
+            android:id="@+id/rabbit8"
+            android:layout_width="43dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/blue_rabbit"
+            android:layout_below="@id/rabbits"
+            android:layout_toEndOf="@id/rabbit3"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

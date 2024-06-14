@@ -71,6 +71,11 @@ public class GameActivity extends AppCompatActivity {
     ImageView rabbit3;
     ImageView rabbit4;
 
+    ImageView rabbit5;
+    ImageView rabbit6;
+    ImageView rabbit7;
+    ImageView rabbit8;
+
     //Data variables
     SharedPreferences sharedPreferences;
 
@@ -91,6 +96,10 @@ public class GameActivity extends AppCompatActivity {
     boolean firstClick2 = true;
     boolean firstClick3 = true;
     boolean firstClick4 = true;
+    boolean firstClick5 = true;
+    boolean firstClick6 = true;
+    boolean firstClick7 = true;
+    boolean firstClick8 = true;
 
 
     @Override
@@ -141,11 +150,34 @@ public class GameActivity extends AppCompatActivity {
 
         updatePlayerTurnText();
 
-
         rabbit1 = findViewById(R.id.rabbit1);
         rabbit2 = findViewById(R.id.rabbit2);
         rabbit3 = findViewById(R.id.rabbit3);
         rabbit4 = findViewById(R.id.rabbit4);
+        rabbit5 = findViewById(R.id.rabbit5);
+        rabbit6 = findViewById(R.id.rabbit6);
+        rabbit7 = findViewById(R.id.rabbit7);
+        rabbit8 = findViewById(R.id.rabbit8);
+
+        if (currentPlayerId.equals(playerId)) {
+            rabbit5.setVisibility(View.INVISIBLE);
+            rabbit6.setVisibility(View.INVISIBLE);
+            rabbit7.setVisibility(View.INVISIBLE);
+            rabbit8.setVisibility(View.INVISIBLE);
+            rabbit1.setVisibility(View.VISIBLE);
+            rabbit2.setVisibility(View.VISIBLE);
+            rabbit3.setVisibility(View.VISIBLE);
+            rabbit4.setVisibility(View.VISIBLE);
+        } else {
+            rabbit1.setVisibility(View.INVISIBLE);
+            rabbit2.setVisibility(View.INVISIBLE);
+            rabbit3.setVisibility(View.INVISIBLE);
+            rabbit4.setVisibility(View.INVISIBLE);
+            rabbit5.setVisibility(View.VISIBLE);
+            rabbit6.setVisibility(View.VISIBLE);
+            rabbit7.setVisibility(View.VISIBLE);
+            rabbit8.setVisibility(View.VISIBLE);
+        }
 
 
         ImageView field1 = findViewById(R.id.field1);
@@ -237,6 +269,54 @@ public class GameActivity extends AppCompatActivity {
            }
         });
 
+        rabbit5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayingPiece playingPiece1 = new PlayingPiece(1, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece1);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        rabbit6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayingPiece playingPiece2 = new PlayingPiece(2, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece2);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        rabbit7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayingPiece playingPiece3 = new PlayingPiece(3, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece3);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        rabbit8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayingPiece playingPiece4 = new PlayingPiece(4, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece4);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         connectToServer();
     }
 
@@ -285,6 +365,7 @@ public class GameActivity extends AppCompatActivity {
             rabbitPosition = gameMessageReceived.getFields();
 
             Log.d("Gameboard", Arrays.toString(rabbitPosition));
+            setMoleHoleImageViews(rabbitPosition);
         }
     }
 
@@ -294,30 +375,57 @@ public class GameActivity extends AppCompatActivity {
 
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
             rabbitPosition = moveMessageReceived.getFields();
+            Log.d("MoveRField", Arrays.toString(rabbitPosition));
             PlayingPiece playingPiece = moveMessage.getPlayingPiece();
+            Log.d("MovePiece", String.valueOf(playingPiece));
 
-
-            if(playerId.equals(currentPlayerId)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(playingPiece.getPlayingPiece() == 1) {
-                            moveRabbit(rabbit1, playingPiece, firstClick1);
+            if(playingPiece != null) {
+                if (playerId.equals(currentPlayerId) || currentPlayerId == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (playingPiece.getPlayingPiece() == 1 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit1, playingPiece, firstClick1);
+                            }
+                            if (playingPiece.getPlayingPiece() == 2 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit2, playingPiece, firstClick2);
+                            }
+                            if (playingPiece.getPlayingPiece() == 3 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit3, playingPiece, firstClick3);
+                            }
+                            if (playingPiece.getPlayingPiece() == 4 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit4, playingPiece, firstClick4);
+                            }
+                            if (playingPiece.getPlayingPiece() == 1 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit5, playingPiece, firstClick5);
+                            }
+                            if (playingPiece.getPlayingPiece() == 2 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit6, playingPiece, firstClick6);
+                            }
+                            if (playingPiece.getPlayingPiece() == 3 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit7, playingPiece, firstClick7);
+                            }
+                            if (playingPiece.getPlayingPiece() == 4 && playingPiece.getPlayerId().equals(currentPlayerId)) {
+                                moveRabbit(rabbit8, playingPiece, firstClick8);
+                            }
                         }
-                        if(playingPiece.getPlayingPiece() == 2) {
-                            moveRabbit(rabbit2, playingPiece, firstClick2);
-                        }
-                        if(playingPiece.getPlayingPiece() == 3) {
-                            moveRabbit(rabbit3, playingPiece, firstClick3);
-                        }
-                        if(playingPiece.getPlayingPiece() == 4) {
-                            moveRabbit(rabbit4, playingPiece, firstClick4);
-                        }
-                    }
-                });
+                    });
+                }
             }
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
+        }
+    }
+
+    private void setMoleHoleImageViews(Field[] RabbitFields) {
+        Log.d("RabbitField", Arrays.toString(RabbitFields));
+        for (int i = 0; i < RabbitFields.length; i++) {
+            Log.d("MoleholeTrue?", String.valueOf(rabbitPosition[i].isMoleHole()));
+            if (RabbitFields[i].isMoleHole() && RabbitFields[i].isOpen()) {
+                fields[i].setBackgroundResource(R.color.black);
+            } else {
+                fields[i].setBackgroundResource(R.color.yellow);
+            }
         }
     }
 
@@ -404,14 +512,13 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private synchronized void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
+    private void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
 
         if(playingPiece != null) {
             ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
             ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
             currentParent.removeView(clickedRabbit);
 
-            Log.d("GameboardMove", Arrays.toString(rabbitPosition));
             int count = -1;
             for (Field field : rabbitPosition) {
                 count++;
@@ -419,11 +526,7 @@ public class GameActivity extends AppCompatActivity {
                 if (field.getPlayingPiece() != null && field.getPlayingPiece().equals(playingPiece))
                     break;
             }
-            Log.d("Gameboard1", Arrays.toString(rabbitPosition));
-            Log.d("Gameboard", String.valueOf(playingPiece));
-            Log.d("Gameboard", String.valueOf(count));
 
-            Log.d("Gameboard", String.valueOf(firstClick));
             if (firstClick) {
                 int rabbitWidth = clickedRabbit.getWidth();
                 int rabbitHeight = clickedRabbit.getHeight();
@@ -438,7 +541,8 @@ public class GameActivity extends AppCompatActivity {
                 layoutParams.leftMargin = xPos;
                 layoutParams.topMargin = yPos;
                 parentLayout.addView(clickedRabbit, layoutParams);
-            } else {
+            }
+            else {
                 parentLayout.addView(clickedRabbit);
                 float targetX = fields[count].getX();
                 float targetY = fields[count].getY();
@@ -446,93 +550,6 @@ public class GameActivity extends AppCompatActivity {
                 clickedRabbit.setY(targetY);
             }
         }
-
     }
-
-    /*
-    private int currentRabbitPosition(int rabbitNumber) {
-        for (int i = 0; i < rabbitPosition.length; i++) {
-            if (rabbitPosition[i] == rabbitNumber) {
-                rabbitPosition[i] = 0;
-                return i;
-            }
-        }
-        return -1;
-    }*/
-
-    /*
-    private boolean isFieldFree (int fieldToGo) {
-        return rabbitPosition[fieldToGo] == 0;
-    }*/
-
-
-    /*
-    private void moveRabbit(ImageView clickedRabbit, int currentPosition, int rabbitNumber) {
-
-        SecureRandom rand = new SecureRandom();
-        int fieldToGo;
-        switch (drawCardMessageReceived.getCard()) {
-            case "ONE":
-                fieldToGo = 1;
-                break;
-            case "TWO":
-                fieldToGo = 2;
-                break;
-            case "THREE":
-                fieldToGo = 3;
-                break;
-            default:
-                fieldToGo = 0;
-        }
-
-        if(fieldToGo + currentPosition >= fields.length){
-            fieldToGo = rand.nextInt(fields.length - currentPosition);
-        }
-
-        ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
-        ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
-        currentParent.removeView(clickedRabbit);
-
-
-        // Add the rabbit ImageView to the parent layout of the field
-        for (Field field : rabbitPosition) {
-        }
-
-        if(currentPosition==-1) {
-            int rabbitWidth = clickedRabbit.getWidth();
-            int rabbitHeight = clickedRabbit.getHeight();
-            int fieldWidth = fields[0].getWidth();
-            int fieldHeight = fields[0].getHeight();
-            while(!(isFieldFree(currentPosition+fieldToGo))) {
-                int newTarget = currentPosition+fieldToGo;
-
-                fieldToGo++;
-            }
-            int xPos = (int)fields[currentPosition + fieldToGo].getX() + (fieldWidth - rabbitWidth) / 2;
-            int yPos = (int)fields[currentPosition + fieldToGo].getY() + (fieldHeight - rabbitHeight) / 2;
-
-            // Add the rabbit ImageView to the parent layout of the fields
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
-            layoutParams.leftMargin = xPos;
-            layoutParams.topMargin = yPos;
-            parentLayout.addView(clickedRabbit, layoutParams);
-        }
-        else {
-            parentLayout.addView(clickedRabbit);
-            while(!(isFieldFree(currentPosition+fieldToGo))) {
-                int newTarget = currentPosition+fieldToGo;
-
-                fieldToGo++;
-            }
-
-            float targetX = fields[currentPosition+fieldToGo].getX();
-            float targetY = fields[currentPosition+fieldToGo].getY();
-            clickedRabbit.setX(targetX);
-            clickedRabbit.setY(targetY);
-        }
-        rabbitPosition[currentPosition+fieldToGo]=rabbitNumber;
-
-    }
-*/
 }
 
