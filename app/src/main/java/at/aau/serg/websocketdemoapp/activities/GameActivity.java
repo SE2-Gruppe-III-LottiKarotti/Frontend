@@ -31,6 +31,8 @@ import at.aau.serg.websocketdemoapp.game.Field;
 import at.aau.serg.websocketdemoapp.game.Gameboard;
 import at.aau.serg.websocketdemoapp.game.PlayingPiece;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -44,6 +46,7 @@ import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.MoveMessage;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameActivity extends AppCompatActivity {
     //Client/Server variables
@@ -82,13 +85,12 @@ public class GameActivity extends AppCompatActivity {
     //Game variables
     private ImageView[] fields = new ImageView[27];
     Field[] rabbitPosition;
-    PlayingPiece playingPiece1;
 
     //Boolean variables
     boolean firstClick1 = true;
-    boolean FirstClick2 = false;
-    boolean firstClick3 = false;
-    boolean isFirstClick4 = false;
+    boolean firstClick2 = true;
+    boolean firstClick3 = true;
+    boolean firstClick4 = true;
 
 
     @Override
@@ -139,10 +141,12 @@ public class GameActivity extends AppCompatActivity {
 
         updatePlayerTurnText();
 
+
         rabbit1 = findViewById(R.id.rabbit1);
         rabbit2 = findViewById(R.id.rabbit2);
         rabbit3 = findViewById(R.id.rabbit3);
         rabbit4 = findViewById(R.id.rabbit4);
+
 
         ImageView field1 = findViewById(R.id.field1);
         ImageView field2 = findViewById(R.id.field2);
@@ -185,37 +189,53 @@ public class GameActivity extends AppCompatActivity {
             sendMessageGame();
         });
 
-
         rabbit1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playingPiece1 = new PlayingPiece(1, playerId);
-                sendMessageMove(playingPiece1);
+                PlayingPiece playingPiece1 = new PlayingPiece(1, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece1);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
-/*
         rabbit2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveRabbit(rabbit2, currentRabbitPosition(2), 2);
+                PlayingPiece playingPiece2 = new PlayingPiece(2, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece2);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         rabbit3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveRabbit(rabbit3, currentRabbitPosition(3), 3);
+                PlayingPiece playingPiece3 = new PlayingPiece(3, currentPlayerId);
+                try {
+                    sendMessageMove(playingPiece3);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         rabbit4.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-           moveRabbit(rabbit4, currentRabbitPosition(4), 4);
+               PlayingPiece playingPiece4 = new PlayingPiece(4, currentPlayerId);
+               try {
+                   sendMessageMove(playingPiece4);
+               } catch (JsonProcessingException e) {
+                   throw new RuntimeException(e);
+               }
            }
-           });
- */
+        });
 
         connectToServer();
     }
@@ -254,8 +274,6 @@ public class GameActivity extends AppCompatActivity {
             String serverResponse = drawCardMessageReceived.getCard();
             showPopup(serverResponse);
 
-            currentPlayerId = nextPlayerId;
-            updatePlayerTurnText();
         }
     }
 
@@ -276,14 +294,30 @@ public class GameActivity extends AppCompatActivity {
 
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
             rabbitPosition = moveMessageReceived.getFields();
+            PlayingPiece playingPiece = moveMessage.getPlayingPiece();
 
-            Log.d("GameboardK", String.valueOf(firstClick1));
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    moveRabbit(rabbit1, playingPiece1, firstClick1);
-                }
-            });
+
+            if(playerId.equals(currentPlayerId)) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(playingPiece.getPlayingPiece() == 1) {
+                            moveRabbit(rabbit1, playingPiece, firstClick1);
+                        }
+                        if(playingPiece.getPlayingPiece() == 2) {
+                            moveRabbit(rabbit2, playingPiece, firstClick2);
+                        }
+                        if(playingPiece.getPlayingPiece() == 3) {
+                            moveRabbit(rabbit3, playingPiece, firstClick3);
+                        }
+                        if(playingPiece.getPlayingPiece() == 4) {
+                            moveRabbit(rabbit4, playingPiece, firstClick4);
+                        }
+                    }
+                });
+            }
+            currentPlayerId = nextPlayerId;
+            updatePlayerTurnText();
         }
     }
 
@@ -325,7 +359,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void sendMessageDraw() {
         {
-            updatePlayerTurnText();
             drawCardMessage.setMessageType(MessageType.DRAW_CARD);
             drawCardMessage.setPlayerID(playerId);
             drawCardMessage.setRoomID(roomId);
@@ -342,73 +375,77 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.sendMessageToServer(jsonMessage);
     }
 
-    private void sendMessageMove(PlayingPiece playingPiece) {
+    private void sendMessageMove(PlayingPiece playingPiece) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
 
-        String card = "";
-        switch (drawCardMessageReceived.getCard()) {
-            case "ONE":
-                card = "1";
-                break;
-            case "TWO":
-                card = "2";
-                break;
-            case "THREE":
-                card = "3";
-                break;
-            default:
-                break;
+        if(playerId.equals(currentPlayerId)) {
+            String card = "";
+            switch (drawCardMessageReceived.getCard()) {
+                case "ONE":
+                    card = "1";
+                    break;
+                case "TWO":
+                    card = "2";
+                    break;
+                case "THREE":
+                    card = "3";
+                    break;
+                default:
+                    break;
+            }
+            moveMessage.setCard(card);
+            moveMessage.setFields(rabbitPosition);
+            moveMessage.setSpielerId(playerId);
+            moveMessage.setRoomId(roomId);
+            moveMessage.setPlayingPiece(playingPiece);
+            String jsonMessage = mapper.writeValueAsString(moveMessage);
+            Log.d("Move", jsonMessage);
+            networkHandler.sendMessageToServer(jsonMessage);
         }
-        moveMessage.setCard(card);
-        moveMessage.setFields(rabbitPosition);
-        moveMessage.setSpielerId(playerId);
-        moveMessage.setRoomId(roomId);
-        moveMessage.setPlayingPiece(playingPiece);
-
-        String jsonMessage = new Gson().toJson(moveMessage);
-        networkHandler.sendMessageToServer(jsonMessage);
     }
 
-    private void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
-        ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
-        ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
-        currentParent.removeView(clickedRabbit);
+    private synchronized void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
 
-        Log.d("GameboardMove", Arrays.toString(rabbitPosition));
-        int count = -1;
-        for (Field field : rabbitPosition) {
-            count++;
-            Log.d("GameboardPiece", String.valueOf(playingPiece));
-            if(field.getPlayingPiece().equals(playingPiece))
-                break;
-        }
-        Log.d("Gameboard1", Arrays.toString(rabbitPosition));
-        Log.d("Gameboard", String.valueOf(playingPiece));
-        Log.d("Gameboard", String.valueOf(count));
+        if(playingPiece != null) {
+            ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
+            ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
+            currentParent.removeView(clickedRabbit);
 
-        Log.d("Gameboard", String.valueOf(firstClick));
-        if(firstClick) {
-            int rabbitWidth = clickedRabbit.getWidth();
-            int rabbitHeight = clickedRabbit.getHeight();
-            int fieldWidth = fields[count].getWidth();
-            int fieldHeight = fields[count].getHeight();
-
-            int xPos = (int)fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
-            int yPos = (int)fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
-
-            // Add the rabbit ImageView to the parent layout of the fields
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
-            layoutParams.leftMargin = xPos;
-            layoutParams.topMargin = yPos;
-            parentLayout.addView(clickedRabbit, layoutParams);
+            Log.d("GameboardMove", Arrays.toString(rabbitPosition));
+            int count = -1;
+            for (Field field : rabbitPosition) {
+                count++;
+                Log.d("GameboardPiece", String.valueOf(playingPiece));
+                if (field.getPlayingPiece() != null && field.getPlayingPiece().equals(playingPiece))
+                    break;
             }
+            Log.d("Gameboard1", Arrays.toString(rabbitPosition));
+            Log.d("Gameboard", String.valueOf(playingPiece));
+            Log.d("Gameboard", String.valueOf(count));
 
-            else {
+            Log.d("Gameboard", String.valueOf(firstClick));
+            if (firstClick) {
+                int rabbitWidth = clickedRabbit.getWidth();
+                int rabbitHeight = clickedRabbit.getHeight();
+                int fieldWidth = fields[0].getWidth();
+                int fieldHeight = fields[0].getHeight();
+
+                int xPos = (int) fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
+                int yPos = (int) fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
+
+                // Add the rabbit ImageView to the parent layout of the fields
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
+                layoutParams.leftMargin = xPos;
+                layoutParams.topMargin = yPos;
+                parentLayout.addView(clickedRabbit, layoutParams);
+            } else {
                 parentLayout.addView(clickedRabbit);
                 float targetX = fields[count].getX();
                 float targetY = fields[count].getY();
                 clickedRabbit.setX(targetX);
                 clickedRabbit.setY(targetY);
             }
+        }
 
     }
 
