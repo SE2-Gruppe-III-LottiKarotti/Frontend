@@ -358,7 +358,7 @@
 
     <RelativeLayout
         android:layout_width="400dp"
-        android:layout_height= "wrap_content"
+        android:layout_height= "127dp"
         android:layout_below="@+id/relative_layout3"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
@@ -461,7 +461,7 @@
             android:layout_marginStart="2dp"
             app:srcCompat="@drawable/blue_rabbit"
             android:layout_below="@id/rabbits"
-            android:layout_toEndOf="@id/rabbit1"/>
+            android:layout_toEndOf="@id/rabbit5"/>
 
         <ImageView
             android:id="@+id/rabbit7"
@@ -470,7 +470,7 @@
             android:layout_marginStart="2dp"
             app:srcCompat="@drawable/blue_rabbit"
             android:layout_below="@id/rabbits"
-            android:layout_toEndOf="@id/rabbit2"/>
+            android:layout_toEndOf="@id/rabbit6"/>
 
         <ImageView
             android:id="@+id/rabbit8"
@@ -479,7 +479,7 @@
             android:layout_marginStart="2dp"
             app:srcCompat="@drawable/blue_rabbit"
             android:layout_below="@id/rabbits"
-            android:layout_toEndOf="@id/rabbit3"/>
+            android:layout_toEndOf="@id/rabbit7"/>
 
     </RelativeLayout>
 

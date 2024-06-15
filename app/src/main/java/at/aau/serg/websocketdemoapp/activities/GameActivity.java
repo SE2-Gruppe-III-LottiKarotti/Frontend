@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -28,23 +28,18 @@ import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
 import at.aau.serg.websocketdemoapp.game.Field;
-import at.aau.serg.websocketdemoapp.game.Gameboard;
 import at.aau.serg.websocketdemoapp.game.PlayingPiece;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Objects;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.MoveMessage;
-import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -221,101 +216,104 @@ public class GameActivity extends AppCompatActivity {
             sendMessageGame();
         });
 
-        rabbit1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece1 = new PlayingPiece(1, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece1);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+        if (currentPlayerId.equals(playerId)) {
+            rabbit1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece1 = new PlayingPiece(1, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece1);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
 
-        rabbit2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece2 = new PlayingPiece(2, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece2);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            rabbit2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece2 = new PlayingPiece(2, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece2);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
 
-        rabbit3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece3 = new PlayingPiece(3, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece3);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            rabbit3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece3 = new PlayingPiece(3, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece3);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
 
-        rabbit4.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               PlayingPiece playingPiece4 = new PlayingPiece(4, currentPlayerId);
-               try {
-                   sendMessageMove(playingPiece4);
-               } catch (JsonProcessingException e) {
-                   throw new RuntimeException(e);
-               }
-           }
-        });
-
-        rabbit5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece1 = new PlayingPiece(1, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece1);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            rabbit4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece4 = new PlayingPiece(4, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece4);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
-
-        rabbit6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece2 = new PlayingPiece(2, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece2);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            });
+        }
+        else {
+            rabbit5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece1 = new PlayingPiece(5, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece1);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
 
-        rabbit7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece3 = new PlayingPiece(3, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece3);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            rabbit6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece2 = new PlayingPiece(6, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece2);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
 
-        rabbit8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlayingPiece playingPiece4 = new PlayingPiece(4, currentPlayerId);
-                try {
-                    sendMessageMove(playingPiece4);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            rabbit7.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece3 = new PlayingPiece(7, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece3);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
+
+            rabbit8.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayingPiece playingPiece4 = new PlayingPiece(8, currentPlayerId);
+                    try {
+                        sendMessageMove(playingPiece4);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
 
         connectToServer();
     }
@@ -375,43 +373,37 @@ public class GameActivity extends AppCompatActivity {
 
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
             rabbitPosition = moveMessageReceived.getFields();
-            Log.d("MoveRField", Arrays.toString(rabbitPosition));
-            PlayingPiece playingPiece = moveMessage.getPlayingPiece();
-            Log.d("MovePiece", String.valueOf(playingPiece));
+            PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
 
-            if(playingPiece != null) {
-                if (playerId.equals(currentPlayerId) || currentPlayerId == null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (playingPiece.getPlayingPiece() == 1 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit1, playingPiece, firstClick1);
-                            }
-                            if (playingPiece.getPlayingPiece() == 2 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit2, playingPiece, firstClick2);
-                            }
-                            if (playingPiece.getPlayingPiece() == 3 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit3, playingPiece, firstClick3);
-                            }
-                            if (playingPiece.getPlayingPiece() == 4 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit4, playingPiece, firstClick4);
-                            }
-                            if (playingPiece.getPlayingPiece() == 1 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit5, playingPiece, firstClick5);
-                            }
-                            if (playingPiece.getPlayingPiece() == 2 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit6, playingPiece, firstClick6);
-                            }
-                            if (playingPiece.getPlayingPiece() == 3 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit7, playingPiece, firstClick7);
-                            }
-                            if (playingPiece.getPlayingPiece() == 4 && playingPiece.getPlayerId().equals(currentPlayerId)) {
-                                moveRabbit(rabbit8, playingPiece, firstClick8);
-                            }
-                        }
-                    });
+            runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (playingPiece.getPlayingPiece() == 1) {
+                    moveRabbit(rabbit1, playingPiece, firstClick1);
+                }
+                if (playingPiece.getPlayingPiece() == 2) {
+                    moveRabbit(rabbit2, playingPiece, firstClick2);
+                }
+                if (playingPiece.getPlayingPiece() == 3) {
+                    moveRabbit(rabbit3, playingPiece, firstClick3);
+                }
+                if (playingPiece.getPlayingPiece() == 4) {
+                    moveRabbit(rabbit4, playingPiece, firstClick4);
+                }
+                if (playingPiece.getPlayingPiece() == 5) {
+                    moveRabbit(rabbit5, playingPiece, firstClick5);
+                }
+                if (playingPiece.getPlayingPiece() == 6) {
+                    moveRabbit(rabbit6, playingPiece, firstClick6);
+                }
+                if (playingPiece.getPlayingPiece() == 7) {
+                    moveRabbit(rabbit7, playingPiece, firstClick7);
+                }
+                if (playingPiece.getPlayingPiece() == 8) {
+                    moveRabbit(rabbit8, playingPiece, firstClick8);
                 }
             }
+            });
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
@@ -507,48 +499,45 @@ public class GameActivity extends AppCompatActivity {
             moveMessage.setRoomId(roomId);
             moveMessage.setPlayingPiece(playingPiece);
             String jsonMessage = mapper.writeValueAsString(moveMessage);
-            Log.d("Move", jsonMessage);
+
             networkHandler.sendMessageToServer(jsonMessage);
         }
     }
 
     private void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
+        ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
+        ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
+        currentParent.removeView(clickedRabbit);
+        clickedRabbit.setVisibility(View.VISIBLE);
 
-        if(playingPiece != null) {
-            ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
-            ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
-            currentParent.removeView(clickedRabbit);
+        int count = -1;
+        for (Field field : rabbitPosition) {
+        count++;
+        if (field.getPlayingPiece() != null && field.getPlayingPiece().equals(playingPiece))
+            break;
+        }
 
-            int count = -1;
-            for (Field field : rabbitPosition) {
-                count++;
-                Log.d("GameboardPiece", String.valueOf(playingPiece));
-                if (field.getPlayingPiece() != null && field.getPlayingPiece().equals(playingPiece))
-                    break;
-            }
+        if (firstClick) {
+            int rabbitWidth = clickedRabbit.getWidth();
+            int rabbitHeight = clickedRabbit.getHeight();
+            int fieldWidth = fields[0].getWidth();
+            int fieldHeight = fields[0].getHeight();
 
-            if (firstClick) {
-                int rabbitWidth = clickedRabbit.getWidth();
-                int rabbitHeight = clickedRabbit.getHeight();
-                int fieldWidth = fields[0].getWidth();
-                int fieldHeight = fields[0].getHeight();
+            int xPos = (int) fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
+            int yPos = (int) fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
 
-                int xPos = (int) fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
-                int yPos = (int) fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
-
-                // Add the rabbit ImageView to the parent layout of the fields
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
-                layoutParams.leftMargin = xPos;
-                layoutParams.topMargin = yPos;
-                parentLayout.addView(clickedRabbit, layoutParams);
-            }
-            else {
-                parentLayout.addView(clickedRabbit);
-                float targetX = fields[count].getX();
-                float targetY = fields[count].getY();
-                clickedRabbit.setX(targetX);
-                clickedRabbit.setY(targetY);
-            }
+            // Add the rabbit ImageView to the parent layout of the fields
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
+            layoutParams.leftMargin = xPos;
+            layoutParams.topMargin = yPos;
+            parentLayout.addView(clickedRabbit, layoutParams);
+        }
+        else {
+            parentLayout.addView(clickedRabbit);
+            float targetX = fields[count].getX();
+            float targetY = fields[count].getY();
+            clickedRabbit.setX(targetX);
+            clickedRabbit.setY(targetY);
         }
     }
 }

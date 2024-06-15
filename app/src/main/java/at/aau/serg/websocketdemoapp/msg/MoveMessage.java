@@ -12,5 +12,5 @@ public class MoveMessage {
     private String spielerId;
     private String card;
     private Field[] fields;
-    PlayingPiece playingPiece;
+    private PlayingPiece playingPiece;
 }
