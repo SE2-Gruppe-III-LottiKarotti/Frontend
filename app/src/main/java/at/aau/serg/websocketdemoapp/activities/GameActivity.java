@@ -85,6 +85,10 @@ public class GameActivity extends AppCompatActivity {
     //Game variables
     private ImageView[] fields = new ImageView[27];
     Field[] rabbitPosition;
+    ViewGroup currentParent1;
+    ViewGroup currentParent2;
+
+    int openHole;
 
     //Boolean variables
     boolean firstClick1 = true;
@@ -315,6 +319,19 @@ public class GameActivity extends AppCompatActivity {
             });
         }
 
+        currentParent1 = (ViewGroup) field27.getParent();
+        currentParent2 = (ViewGroup) buttonStart.getParent();
+        field27.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    sendMessageMove(null);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         connectToServer();
     }
 
@@ -363,7 +380,7 @@ public class GameActivity extends AppCompatActivity {
             rabbitPosition = gameMessageReceived.getFields();
 
             Log.d("Gameboard", Arrays.toString(rabbitPosition));
-            setMoleHoleImageViews(rabbitPosition);
+            setMoleHoleImageViews();
         }
     }
 
@@ -375,50 +392,103 @@ public class GameActivity extends AppCompatActivity {
             rabbitPosition = moveMessageReceived.getFields();
             PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
 
-            runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (playingPiece.getPlayingPiece() == 1) {
-                    moveRabbit(rabbit1, playingPiece, firstClick1);
-                }
-                if (playingPiece.getPlayingPiece() == 2) {
-                    moveRabbit(rabbit2, playingPiece, firstClick2);
-                }
-                if (playingPiece.getPlayingPiece() == 3) {
-                    moveRabbit(rabbit3, playingPiece, firstClick3);
-                }
-                if (playingPiece.getPlayingPiece() == 4) {
-                    moveRabbit(rabbit4, playingPiece, firstClick4);
-                }
-                if (playingPiece.getPlayingPiece() == 5) {
-                    moveRabbit(rabbit5, playingPiece, firstClick5);
-                }
-                if (playingPiece.getPlayingPiece() == 6) {
-                    moveRabbit(rabbit6, playingPiece, firstClick6);
-                }
-                if (playingPiece.getPlayingPiece() == 7) {
-                    moveRabbit(rabbit7, playingPiece, firstClick7);
-                }
-                if (playingPiece.getPlayingPiece() == 8) {
-                    moveRabbit(rabbit8, playingPiece, firstClick8);
-                }
+            if(playingPiece==null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setMoleHoleImageViews();
+                    }
+                });
             }
-            });
+            else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (playingPiece.getPlayingPiece() == 1) {
+                            moveRabbit(rabbit1, playingPiece, firstClick1);
+                        }
+                        if (playingPiece.getPlayingPiece() == 2) {
+                            moveRabbit(rabbit2, playingPiece, firstClick2);
+                        }
+                        if (playingPiece.getPlayingPiece() == 3) {
+                            moveRabbit(rabbit3, playingPiece, firstClick3);
+                        }
+                        if (playingPiece.getPlayingPiece() == 4) {
+                            moveRabbit(rabbit4, playingPiece, firstClick4);
+                        }
+                        if (playingPiece.getPlayingPiece() == 5) {
+                            moveRabbit(rabbit5, playingPiece, firstClick5);
+                        }
+                        if (playingPiece.getPlayingPiece() == 6) {
+                            moveRabbit(rabbit6, playingPiece, firstClick6);
+                        }
+                        if (playingPiece.getPlayingPiece() == 7) {
+                            moveRabbit(rabbit7, playingPiece, firstClick7);
+                        }
+                        if (playingPiece.getPlayingPiece() == 8) {
+                            moveRabbit(rabbit8, playingPiece, firstClick8);
+                        }
+                    }
+                });
+            }
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
     }
 
-    private void setMoleHoleImageViews(Field[] RabbitFields) {
-        Log.d("RabbitField", Arrays.toString(RabbitFields));
-        for (int i = 0; i < RabbitFields.length; i++) {
-            Log.d("MoleholeTrue?", String.valueOf(rabbitPosition[i].isMoleHole()));
-            if (RabbitFields[i].isMoleHole() && RabbitFields[i].isOpen()) {
+    private void setMoleHoleImageViews() {
+
+        for (int i = 0; i < rabbitPosition.length; i++) {
+            if (rabbitPosition[i].isOpen()) {
+                openHole = i;
                 fields[i].setBackgroundResource(R.color.black);
+                PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
+                if(playingPiece!=null){
+                    removePlayingPiece(playingPiece, i);
+                }
             } else {
                 fields[i].setBackgroundResource(R.color.yellow);
             }
         }
+    }
+
+    private void removePlayingPiece(PlayingPiece playingPiece, int position){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int rabbitNumber = playingPiece.getPlayingPiece();
+                    switch (rabbitNumber) {
+                        case 1:
+                            currentParent1.removeView(rabbit1);
+                            break;
+                        case 2:
+                            currentParent1.removeView(rabbit2);
+                            break;
+                        case 3:
+                            currentParent1.removeView(rabbit3);
+                            break;
+                        case 4:
+                            currentParent1.removeView(rabbit4);
+                            break;
+                        case 5:
+                            currentParent1.removeView(rabbit5);
+                            break;
+                        case 6:
+                            currentParent1.removeView(rabbit6);
+                            break;
+                        case 7:
+                            currentParent1.removeView(rabbit7);
+                            break;
+                        case 8:
+                            currentParent1.removeView(rabbit8);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    rabbitPosition[position].setPlayingPiece(null);
+                }
+            });
     }
 
     private void showPopup(String serverResponse) {
@@ -490,9 +560,13 @@ public class GameActivity extends AppCompatActivity {
                 case "THREE":
                     card = "3";
                     break;
+                case "CARROT":
+                    card = "CARROT";
+                    break;
                 default:
                     break;
             }
+            Log.d("IsOpen", Arrays.toString(rabbitPosition));
             moveMessage.setCard(card);
             moveMessage.setFields(rabbitPosition);
             moveMessage.setSpielerId(playerId);
@@ -507,37 +581,43 @@ public class GameActivity extends AppCompatActivity {
     private void moveRabbit(ImageView clickedRabbit, PlayingPiece playingPiece, boolean firstClick) {
         ViewGroup parentLayout = (ViewGroup) findViewById(R.id.relative_layout3);
         ViewGroup currentParent = (ViewGroup) clickedRabbit.getParent();
-        currentParent.removeView(clickedRabbit);
+        if(currentParent != null) {
+            currentParent.removeView(clickedRabbit);
+        }
         clickedRabbit.setVisibility(View.VISIBLE);
 
         int count = -1;
         for (Field field : rabbitPosition) {
+
         count++;
         if (field.getPlayingPiece() != null && field.getPlayingPiece().equals(playingPiece))
             break;
         }
+        if (count == openHole) {
+            int rabbitNumber = playingPiece.getPlayingPiece();
+            removePlayingPiece(playingPiece, rabbitNumber);
+        } else {
+            if (firstClick) {
+                int rabbitWidth = clickedRabbit.getWidth();
+                int rabbitHeight = clickedRabbit.getHeight();
+                int fieldWidth = fields[0].getWidth();
+                int fieldHeight = fields[0].getHeight();
 
-        if (firstClick) {
-            int rabbitWidth = clickedRabbit.getWidth();
-            int rabbitHeight = clickedRabbit.getHeight();
-            int fieldWidth = fields[0].getWidth();
-            int fieldHeight = fields[0].getHeight();
+                int xPos = (int) fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
+                int yPos = (int) fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
 
-            int xPos = (int) fields[count].getX() + (fieldWidth - rabbitWidth) / 2;
-            int yPos = (int) fields[count].getY() + (fieldHeight - rabbitHeight) / 2;
-
-            // Add the rabbit ImageView to the parent layout of the fields
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
-            layoutParams.leftMargin = xPos;
-            layoutParams.topMargin = yPos;
-            parentLayout.addView(clickedRabbit, layoutParams);
-        }
-        else {
-            parentLayout.addView(clickedRabbit);
-            float targetX = fields[count].getX();
-            float targetY = fields[count].getY();
-            clickedRabbit.setX(targetX);
-            clickedRabbit.setY(targetY);
+                // Add the rabbit ImageView to the parent layout of the fields
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(rabbitWidth, rabbitHeight);
+                layoutParams.leftMargin = xPos;
+                layoutParams.topMargin = yPos;
+                parentLayout.addView(clickedRabbit, layoutParams);
+            } else {
+                parentLayout.addView(clickedRabbit);
+                float targetX = fields[count].getX();
+                float targetY = fields[count].getY();
+                clickedRabbit.setX(targetX);
+                clickedRabbit.setY(targetY);
+            }
         }
     }
 }
