@@ -70,6 +70,7 @@ public class GameActivity extends AppCompatActivity {
     ImageView rabbit6;
     ImageView rabbit7;
     ImageView rabbit8;
+    ImageView field27;
 
     //Data variables
     SharedPreferences sharedPreferences;
@@ -205,7 +206,7 @@ public class GameActivity extends AppCompatActivity {
         ImageView field24 = findViewById(R.id.field24);
         ImageView field25 = findViewById(R.id.field25);
         ImageView field26 = findViewById(R.id.field26);
-        ImageView field27 = findViewById(R.id.field27);
+        field27 = findViewById(R.id.field27);
 
         fields = new ImageView[]{field1, field2, field3, field4, field5, field6, field7, field8, field9,
                 field10, field11, field12, field13, field14, field15, field16, field17, field18, field19,
@@ -331,6 +332,17 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         });
+        /*
+        rabbit1.setEnabled(false);
+        rabbit2.setEnabled(false);
+        rabbit3.setEnabled(false);
+        rabbit4.setEnabled(false);
+        rabbit5.setEnabled(false);
+        rabbit6.setEnabled(false);
+        rabbit7.setEnabled(false);
+        rabbit8.setEnabled(false);
+        field27.setEnabled(false);
+        */
 
         connectToServer();
     }
@@ -379,8 +391,8 @@ public class GameActivity extends AppCompatActivity {
             gameMessageReceived = gson.fromJson(jsonString, GameMessage.class);
             rabbitPosition = gameMessageReceived.getFields();
 
-            Log.d("Gameboard", Arrays.toString(rabbitPosition));
             setMoleHoleImageViews();
+            //buttonStart.setEnabled(false);
         }
     }
 
@@ -485,7 +497,6 @@ public class GameActivity extends AppCompatActivity {
                         default:
                             break;
                     }
-
                     rabbitPosition[position].setPlayingPiece(null);
                 }
             });
@@ -516,11 +527,24 @@ public class GameActivity extends AppCompatActivity {
                             case "CARROT":
                                 Carrot carrot = new Carrot();
                                 fragmentTransaction.add(R.id.fragmentContainer, carrot, "CarrotTag");
+                                field27.setEnabled(true);
                                 break;
                             default:
                                 break;
                         }
                         fragmentTransaction.commit();
+
+                        /*
+                        if(serverResponse.equals("ONE") || serverResponse.equals("TWO") || serverResponse.equals("THREE")) {
+                            rabbit1.setEnabled(true);
+                            rabbit2.setEnabled(true);
+                            rabbit3.setEnabled(true);
+                            rabbit4.setEnabled(true);
+                            rabbit5.setEnabled(true);
+                            rabbit6.setEnabled(true);
+                            rabbit7.setEnabled(true);
+                            rabbit8.setEnabled(true);
+                        }*/
                     }
                 }
             });
@@ -566,7 +590,6 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     break;
             }
-            Log.d("IsOpen", Arrays.toString(rabbitPosition));
             moveMessage.setCard(card);
             moveMessage.setFields(rabbitPosition);
             moveMessage.setSpielerId(playerId);
@@ -585,6 +608,16 @@ public class GameActivity extends AppCompatActivity {
             currentParent.removeView(clickedRabbit);
         }
         clickedRabbit.setVisibility(View.VISIBLE);
+        /*
+        rabbit1.setEnabled(false);
+        rabbit2.setEnabled(false);
+        rabbit3.setEnabled(false);
+        rabbit4.setEnabled(false);
+        rabbit5.setEnabled(false);
+        rabbit6.setEnabled(false);
+        rabbit7.setEnabled(false);
+        rabbit8.setEnabled(false);
+        */
 
         int count = -1;
         for (Field field : rabbitPosition) {
