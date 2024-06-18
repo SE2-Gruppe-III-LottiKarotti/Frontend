@@ -95,7 +95,7 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        networkHandler.addMessageHandler("open", this::messageReceivedFromServer);
+        networkHandler.addMessageHandler("OPEN_ROOM", this::messageReceivedFromServer);
         networkHandler.connectToServer();
     }
 

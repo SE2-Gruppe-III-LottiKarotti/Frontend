@@ -116,9 +116,9 @@ public class GameActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
 
         networkHandler = new WebSocketClient();
-        networkHandler.addMessageHandler("draw_card", this::receiveDrawMessage);
-        networkHandler.addMessageHandler("game", this::receiveGameMessage);
-        networkHandler.addMessageHandler("move", this::receiveMoveMessage);
+        networkHandler.addMessageHandler("DRAW_CARD", this::receiveDrawMessage);
+        networkHandler.addMessageHandler("GAME", this::receiveGameMessage);
+        networkHandler.addMessageHandler("MOVE", this::receiveMoveMessage);
         networkHandler.connectToServer();
 
         drawCardMessage = new DrawCardMessage();
@@ -450,7 +450,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void setMoleHoleImageViews() {
 
-        for (int i = 0; i < rabbitPosition.length; i++) {
+        for (int i = 0; i < rabbitPosition.length-1; i++) {
             if (rabbitPosition[i].isOpen()) {
                 openHole = i;
                 fields[i].setBackgroundResource(R.color.black);

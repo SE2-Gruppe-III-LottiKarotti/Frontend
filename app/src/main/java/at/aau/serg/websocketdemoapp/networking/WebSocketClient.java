@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -47,7 +48,7 @@ public class WebSocketClient {
             public void onMessage(WebSocket webSocket, String text) {
                 Gson gson = new Gson();
                 JsonElement jsonElement = gson.fromJson(text, JsonElement.class);
-                String type = jsonElement.getAsJsonObject().get("type").getAsString();
+                String type = jsonElement.getAsJsonObject().get("messageType").getAsString();
 
                 WebSocketMessageHandler<String> handler = messageHandlers.get(type);
                 if (handler!= null) {
