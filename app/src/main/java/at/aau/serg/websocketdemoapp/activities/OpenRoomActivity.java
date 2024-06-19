@@ -24,11 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.msg.CreateRoomMessage;
-import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
-import at.aau.serg.websocketdemoapp.msg.RoomSetupMessage;
-import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class OpenRoomActivity extends AppCompatActivity {
@@ -99,7 +95,8 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        networkHandler.connectToServer(this::messageReceivedFromServer);
+        networkHandler.addMessageHandler("OPEN_ROOM", this::messageReceivedFromServer);
+        networkHandler.connectToServer();
     }
 
     //TODO: to handle this topic: use more than one message maybe... as atomic as possible
