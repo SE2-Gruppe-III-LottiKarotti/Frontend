@@ -36,18 +36,11 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     WebSocketClient networkHandler;
 
-    //ListView roomListView;
-    ListView listView;
-    //ArrayAdapter<String> roomAdapter;
-    ArrayAdapter<String> adapter;
-
     EditText roomNameEditText;
     EditText playerNameEditText;
     Button refreshButton;
     Button joinButton;
-
     Button backButton;
-
     SharedPreferences sharedPreferences;
 
     private final Gson gson = new Gson();
@@ -66,7 +59,6 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
 
-        listView = findViewById(R.id.roomListView);
         playerNameEditText = findViewById(R.id.playerNameEditText);
         roomNameEditText = findViewById(R.id.roomNameEditText);
         refreshButton = findViewById(R.id.refreshButton);
@@ -75,11 +67,6 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         networkHandler = new WebSocketClient();
         connectToWebSocketServer();
-
-        //init listView
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        listView.setAdapter(adapter); //roomAdapter
-
 
         //init List
         initRoomList();
@@ -172,8 +159,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         if (message.getActionTypeRoomListMessage() == RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_OK) {
             List<RoomInfo> receivedRooms = message.getRoomInfoArrayList();
             Log.d("MSG", "received room list " + message);
-
-            updateRoomList(receivedRooms);
         }
         else {
             runOnUiThread(()-> Toast.makeText(JoinRoomActivity.this, "error", Toast.LENGTH_SHORT).show());
@@ -181,7 +166,6 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         }
     }
-
 
     private void handleJoinRoomMessage(JoinRoomMessage message) {
 
@@ -221,7 +205,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         }
     }
 
-
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
@@ -255,45 +238,4 @@ public class JoinRoomActivity extends AppCompatActivity {
             Log.e("Error", "Received message is not a String");
         }
     }
-
-
-    private void updateRoomList(List<RoomInfo> roomInfoList) {
-        adapter.clear();
-        Log.d("LOGG", "updateRoomFunctionBeginning");
-
-        for (RoomInfo roomInfo : roomInfoList) {
-            String roomString = "Room ID: " + roomInfo.getRoomID() +
-                    "\nRoom Name: " + roomInfo.getRoomName() +
-                    "\nCreator: " + roomInfo.getCreator() +
-                    "\nAvailable Players Space: " + roomInfo.getAvailablePlayersSpace();
-
-
-            //add string to the adapter
-            adapter.add(roomString);
-
-
-            //notify adapter
-            adapter.notifyDataSetChanged();
-
-            Log.d("LOGG", "updateRoomFunctionLoop" + roomInfo);
-
-        }
-        Log.d("LOGG", "updateRoomFunctionEnd");
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
