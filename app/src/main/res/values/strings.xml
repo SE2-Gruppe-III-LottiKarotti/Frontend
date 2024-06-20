@@ -28,4 +28,9 @@
     <string name="player_name">Player name:</string>
     <string name="number_of_players">Number of players:</string>
     <string name="room_name">Room name:</string>
+    <string name="join_room1">Join Room</string>
+    <string name="enter_room_name1">Enter Room Name</string>
+    <string name="enter_player_name1">Enter Player Name</string>
+    <string name="joinButton">Join</string>
+    <string name="refresh">Refresh</string>
 </resources>
