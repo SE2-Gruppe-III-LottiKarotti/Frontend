@@ -405,6 +405,7 @@ public class GameActivity extends AppCompatActivity {
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
             rabbitPosition = moveMessageReceived.getFields();
             PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
+            String player = moveMessageReceived.getPlayingPiece().getPlayerId();
 
             if(playingPiece==null){
                 runOnUiThread(new Runnable() {
@@ -445,7 +446,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                 });
             }
-            showWinner(rabbitPosition);
+            showWinner(rabbitPosition, player);
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
@@ -554,17 +555,23 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void showWinner(Field[] rabbitPosi) {
-        if(rabbitPosi[2].getPlayingPiece() != null) {
+    private void showWinner(Field[] rabbitPos, String player) {
+        if(rabbitPos[26].getPlayingPiece() != null) {
         runOnUiThread(new Runnable() {
             public void run() {
-                String playerId = rabbitPosi[2].getPlayingPiece().getPlayerId();
-
-                Log.d("Winner", "Hallo");
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                 Winner winner = new Winner();
+
+                Bundle args = new Bundle();
+                if (player.equals(playerId)) {
+                    args.putString("player", playerName + " wins!");
+                }
+                else {
+                    args.putString("player", "You lose!");
+                }
+                winner.setArguments(args);
 
                 fragmentTransaction.add(R.id.fragmentContainerWin, winner, "WinnerTag");
                 fragmentTransaction.commit();
