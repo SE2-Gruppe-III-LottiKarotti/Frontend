@@ -1,18 +1,24 @@
 package at.aau.serg.websocketdemoapp.msg;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class GuessCheaterMessage {
+@EqualsAndHashCode(callSuper = true)
+public class GuessCheaterMessage extends BaseMessage{
 
-    private final MessageType messageType = MessageType.CHEAT;
-    //der spieler, welcher beschuldigt
+
+    //the player who blame the other player to be a cheater (blamer)
     private String accusingPlayerId;
     private String accusingPlayerName;
-    //der spieler, welcher beschuldigt wird
+    //the player who should be the cheater (cheater)
     private String playerToBlameName;
     private String playerToBlameId;
     private String roomId;
+
+    public GuessCheaterMessage () {
+        this.messageType = MessageType.CHEAT;
+    }
 
 
 }

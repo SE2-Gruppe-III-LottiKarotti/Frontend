@@ -3,38 +3,25 @@ package at.aau.serg.websocketdemoapp.msg;
 import java.util.ArrayList;
 
 import at.aau.serg.websocketdemoapp.networking.RoomInfo;
-//import lombok.Data;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-//@Data
-public class RoomListMessage {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class RoomListMessage extends BaseMessage {
 
-    private final MessageType messageType = MessageType.LIST_ROOMS;
+    public RoomListMessage () {
+        //default
+        this.messageType = MessageType.LIST_ROOMS;
+    }
 
-    ArrayList<RoomInfo> roomInfoArrayList;
-    ActionTypeRoomListMessage actionTypeRoomListMessage;
+    private ArrayList<RoomInfo> roomInfoArrayList;
+    private ActionTypeRoomListMessage actionTypeRoomListMessage;
     public enum ActionTypeRoomListMessage {
         ASK_FOR_ROOM_LIST,
         ANSWER_ROOM_LIST_OK,
-        ANSWER_ROOM_LISR_ERR
+        ANSWER_ROOM_LIST_ERR
     }
 
-    public MessageType getMessageType() {
-        return messageType;
-    }
 
-    public ArrayList<RoomInfo> getRoomInfoArrayList() {
-        return roomInfoArrayList;
-    }
-
-    public void setRoomInfoArrayList(ArrayList<RoomInfo> roomInfoArrayList) {
-        this.roomInfoArrayList = roomInfoArrayList;
-    }
-
-    public ActionTypeRoomListMessage getActionTypeRoomListMessage() {
-        return actionTypeRoomListMessage;
-    }
-
-    public void setActionTypeRoomListMessage(ActionTypeRoomListMessage actionTypeRoomListMessage) {
-        this.actionTypeRoomListMessage = actionTypeRoomListMessage;
-    }
 }

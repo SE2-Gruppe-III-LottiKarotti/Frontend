@@ -2,11 +2,12 @@ package at.aau.serg.websocketdemoapp.msg;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class OpenRoomMessage {
+@EqualsAndHashCode(callSuper = true)
+public class OpenRoomMessage extends BaseMessage{
 
-    private final MessageType messageType = MessageType.OPEN_ROOM;
     private String roomId;
     private String roomName;
     private String playerId;
@@ -20,5 +21,9 @@ public class OpenRoomMessage {
         OPEN_ROOM_OK,
         OPEN_ROOM_ERR,
 
+    }
+
+    public OpenRoomMessage () {
+        this.messageType = MessageType.OPEN_ROOM;
     }
 }
