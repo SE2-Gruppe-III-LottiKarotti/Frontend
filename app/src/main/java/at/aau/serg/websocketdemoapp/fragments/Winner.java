@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -22,7 +23,7 @@ public class Winner extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_winner, container, false);
 
-        ImageButton backButton = view.findViewById(R.id.back_button);
+        Button backButton = view.findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);

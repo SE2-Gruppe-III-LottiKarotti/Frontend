@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import static at.aau.serg.websocketdemoapp.msg.DrawCardMessage.ActionTypeDrawCard.ASK_FOR_CARD;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import at.aau.serg.websocketdemoapp.fragments.Carrot;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
+import at.aau.serg.websocketdemoapp.fragments.Winner;
 import at.aau.serg.websocketdemoapp.game.Field;
 import at.aau.serg.websocketdemoapp.game.PlayingPiece;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
@@ -443,6 +445,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                 });
             }
+            showWinner(rabbitPosition);
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
@@ -548,6 +551,25 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    private void showWinner(Field[] rabbitPosi) {
+        if(rabbitPosi[2].getPlayingPiece() != null) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                String playerId = rabbitPosi[2].getPlayingPiece().getPlayerId();
+
+                Log.d("Winner", "Hallo");
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                Winner winner = new Winner();
+
+                fragmentTransaction.add(R.id.fragmentContainerWin, winner, "WinnerTag");
+                fragmentTransaction.commit();
+            }
+        });
         }
     }
 
