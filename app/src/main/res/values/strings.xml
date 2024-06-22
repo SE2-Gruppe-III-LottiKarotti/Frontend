@@ -33,4 +33,5 @@
     <string name="enter_player_name1">Enter Player Name</string>
     <string name="joinButton">Join</string>
     <string name="refresh">Refresh</string>
+    <string name="back_to_menu1">Back to menu</string>
 </resources>

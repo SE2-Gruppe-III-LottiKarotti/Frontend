@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import static at.aau.serg.websocketdemoapp.msg.DrawCardMessage.ActionTypeDrawCard.ASK_FOR_CARD;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import at.aau.serg.websocketdemoapp.fragments.Carrot;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit2;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit3;
+import at.aau.serg.websocketdemoapp.fragments.Winner;
 import at.aau.serg.websocketdemoapp.game.Field;
 import at.aau.serg.websocketdemoapp.game.PlayingPiece;
 import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
@@ -403,6 +405,7 @@ public class GameActivity extends AppCompatActivity {
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
             rabbitPosition = moveMessageReceived.getFields();
             PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
+            String player = moveMessageReceived.getPlayingPiece().getPlayerId();
 
             if(playingPiece==null){
                 runOnUiThread(new Runnable() {
@@ -443,6 +446,7 @@ public class GameActivity extends AppCompatActivity {
                     }
                 });
             }
+            showWinner(rabbitPosition, player);
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
@@ -548,6 +552,31 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    private void showWinner(Field[] rabbitPos, String player) {
+        if(rabbitPos[26].getPlayingPiece() != null) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                Winner winner = new Winner();
+
+                Bundle args = new Bundle();
+                if (player.equals(playerId)) {
+                    args.putString("player", playerName + " wins!");
+                }
+                else {
+                    args.putString("player", "You lose!");
+                }
+                winner.setArguments(args);
+
+                fragmentTransaction.add(R.id.fragmentContainerWin, winner, "WinnerTag");
+                fragmentTransaction.commit();
+            }
+        });
         }
     }
 
