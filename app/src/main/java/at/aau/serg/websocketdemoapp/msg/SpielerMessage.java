@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class SpielerMessage {
-    private final MessageType messageType = MessageType.SPIELER;
-    private ActionType actionType;
+    private final MessageType messageType = MessageType.PLAYER;
     private String spielerID;
     private String name;
 }

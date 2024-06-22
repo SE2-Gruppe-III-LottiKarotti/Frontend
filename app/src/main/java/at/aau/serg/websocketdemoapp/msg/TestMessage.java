@@ -1,36 +1,21 @@
 package at.aau.serg.websocketdemoapp.msg;
 
-public class TestMessage {
-    private final MessageType messageType = MessageType.TEST;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TestMessage extends BaseMessage {
 
     private String text;
 
-    String messageIdentifier;
+    private String messageIdentifier;
 
     public TestMessage() {
+        //default
+        this.messageType = MessageType.TEST;
     }
 
-    public TestMessage(String text) {
-        this.text = text;
-    }
 
-    public MessageType getMessageType() {
-        return messageType;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getMessageIdentifier() {
-        return messageIdentifier;
-    }
-
-    public void setMessageIdentifier(String messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
-    }
 }

@@ -2,10 +2,17 @@ package at.aau.serg.websocketdemoapp.msg;
 
 import at.aau.serg.websocketdemoapp.game.Field;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class GameMessage {
-    private final MessageType messageType = MessageType.GAME;
+@EqualsAndHashCode(callSuper = true)
+public class GameMessage extends BaseMessage{
+
+    public GameMessage() {
+        this.messageType = MessageType.GAME;
+    }
 
     Field fields[];
+    /*@JsonProperty("fields")
+    Field fields[];*/
 }
