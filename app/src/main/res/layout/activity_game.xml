@@ -383,7 +383,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="15dp"
             android:backgroundTint="@color/orange"
-            android:hint="Start Game"
+            android:hint="@string/chat"
             android:textColor="@color/black"
             android:textSize="15dp"
             android:textStyle="bold" />

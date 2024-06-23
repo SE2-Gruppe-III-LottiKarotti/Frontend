@@ -179,6 +179,7 @@ public class JoinRoomActivity extends AppCompatActivity {
         editor.putString("roomName", roomName);
         editor.putString("playerId", playerId);
         editor.putString("playerName", playerName);
+        editor.putString("start", "player2joined");
         editor.apply();
 
         switch(message.getActionTypeJoinRoom()) {
