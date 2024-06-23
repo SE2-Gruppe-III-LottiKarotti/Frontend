@@ -56,7 +56,6 @@ public class GameActivity extends AppCompatActivity {
     GameMessage gameMessageReceived;
     MoveMessage moveMessage;
     MoveMessage moveMessageReceived;
-
     GuessCheaterMessage cheatMessage;
     GuessCheaterMessage cheaterMessageReceived;
 
@@ -69,11 +68,12 @@ public class GameActivity extends AppCompatActivity {
     TextView playerNameView;
     TextView roomNameTitleView;
     TextView playerTurnView;
+    //player1
     ImageView rabbit1;
     ImageView rabbit2;
     ImageView rabbit3;
     ImageView rabbit4;
-
+    //player2
     ImageView rabbit5;
     ImageView rabbit6;
     ImageView rabbit7;
@@ -97,8 +97,6 @@ public class GameActivity extends AppCompatActivity {
     private ImageView[] fields = new ImageView[27];
     Field[] rabbitPosition;
     ViewGroup currentParent1;
-    ViewGroup currentParent2;
-
     int openHole;
 
     //Boolean variables
@@ -110,7 +108,7 @@ public class GameActivity extends AppCompatActivity {
     boolean firstClick6 = true;
     boolean firstClick7 = true;
     boolean firstClick8 = true;
-
+    boolean firstRound = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +159,6 @@ public class GameActivity extends AppCompatActivity {
         currentPlayerId = sharedPreferences.getString("playerToStart", null);
         start = sharedPreferences.getString("start", null);
 
-
         playerNameView.setText(playerName);
         roomNameTitleView.setText(roomName);
 
@@ -181,21 +178,12 @@ public class GameActivity extends AppCompatActivity {
             rabbit6.setVisibility(View.INVISIBLE);
             rabbit7.setVisibility(View.INVISIBLE);
             rabbit8.setVisibility(View.INVISIBLE);
-            rabbit1.setVisibility(View.VISIBLE);
-            rabbit2.setVisibility(View.VISIBLE);
-            rabbit3.setVisibility(View.VISIBLE);
-            rabbit4.setVisibility(View.VISIBLE);
         } else {
             rabbit1.setVisibility(View.INVISIBLE);
             rabbit2.setVisibility(View.INVISIBLE);
             rabbit3.setVisibility(View.INVISIBLE);
             rabbit4.setVisibility(View.INVISIBLE);
-            rabbit5.setVisibility(View.VISIBLE);
-            rabbit6.setVisibility(View.VISIBLE);
-            rabbit7.setVisibility(View.VISIBLE);
-            rabbit8.setVisibility(View.VISIBLE);
         }
-
 
         ImageView field1 = findViewById(R.id.field1);
         ImageView field2 = findViewById(R.id.field2);
@@ -353,18 +341,8 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         });
-        /*
-        rabbit1.setEnabled(false);
-        rabbit2.setEnabled(false);
-        rabbit3.setEnabled(false);
-        rabbit4.setEnabled(false);
-        rabbit5.setEnabled(false);
-        rabbit6.setEnabled(false);
-        rabbit7.setEnabled(false);
-        rabbit8.setEnabled(false);
-        field27.setEnabled(false);
-        */
 
+        //Send moveMessage when player2 joins the room to setup gameboard
         if(start.equals("player2joined")){
             sendMessageGame();
         }
@@ -388,11 +366,21 @@ public class GameActivity extends AppCompatActivity {
                     playerTurnView.setText(playerName + " its your turn");
                     buttonDraw.setEnabled(true);
                     buttonDraw.postInvalidate();
+                    if(!firstRound) {
+                        buttonCheater.setEnabled(true);
+                        buttonCheater.postInvalidate();
+                    } else{
+                        buttonCheater.setEnabled(false);
+                        buttonCheater.postInvalidate();
+                    }
                 } else {
-                    playerTurnView.setText("Waiting for the other player");
+                    playerTurnView.setText(R.string.waiting_for_the_other_player);
                     buttonDraw.setEnabled(false);
                     buttonDraw.postInvalidate();
+                    buttonCheater.setEnabled(false);
+                    buttonCheater.postInvalidate();
                 }
+                firstRound = false;
             }
         });
     }
@@ -405,7 +393,6 @@ public class GameActivity extends AppCompatActivity {
             nextPlayerId = drawCardMessageReceived.getNextPlayerId();
             String serverResponse = drawCardMessageReceived.getCard();
             showPopup(serverResponse);
-
         }
     }
 
@@ -427,10 +414,8 @@ public class GameActivity extends AppCompatActivity {
                 public void run() {
                     setMoleHoleImageViews();
                     setUpCheaterView(playerCheat);
-                    //buttonStart.setEnabled(false);
                 }
             });
-            //buttonStart.setEnabled(false);
         }
     }
 
@@ -438,7 +423,6 @@ public class GameActivity extends AppCompatActivity {
         if (message instanceof String) {
             String jsonString = (String) message;
 
-            Log.d("Cheat", "Hallo");
             cheaterMessageReceived = gson.fromJson(jsonString, GuessCheaterMessage.class);
             String playerToBlameId = cheaterMessageReceived.getPlayerToBlameId();
             String accusingPlayerId = cheaterMessageReceived.getAccusingPlayerId();
@@ -465,19 +449,12 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpCheaterView(String playerCheat){
-        String[] cheaterOptions = new String[]{playerCheat};
-        ArrayAdapter<String> cheaterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, cheaterOptions);
-        spinnerGuessCheater.setAdapter(cheaterAdapter);
-    }
-
     private <T> void receiveMoveMessage(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
             String player = "";
 
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
-            Log.d("MoveM", moveMessageReceived.toString());
             rabbitPosition = moveMessageReceived.getFields();
             PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
 
@@ -521,13 +498,17 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void setUpCheaterView(String playerCheat){
+        String[] cheaterOptions = new String[]{playerCheat};
+        ArrayAdapter<String> cheaterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, cheaterOptions);
+        spinnerGuessCheater.setAdapter(cheaterAdapter);
+    }
+
     private void setMoleHoleImageViews() {
         runOnUiThread(new Runnable() {
             public void run() {
                 for (int i = 0; i < rabbitPosition.length - 1; i++) {
                     if (rabbitPosition[i].isOpen()) {
-                        Log.d("Mole", rabbitPosition[i].toString() + " " + i);
-                        Log.d("Mole", Arrays.toString(rabbitPosition));
                         openHole = i;
                         fields[i].setBackgroundResource(R.color.black);
                         PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
@@ -546,7 +527,6 @@ public class GameActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("Cheat", "Hallo von remove");
                     int rabbitNumber = playingPiece.getPlayingPiece();
                     switch (rabbitNumber) {
                         case 1:
@@ -585,6 +565,10 @@ public class GameActivity extends AppCompatActivity {
         if (playerId.equals(currentPlayerId)) {
             runOnUiThread(new Runnable() {
                 public void run() {
+                    buttonCheater.setEnabled(false);
+                    buttonCheater.postInvalidate();
+                    buttonDraw.setEnabled(false);
+                    buttonDraw.postInvalidate();
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -612,18 +596,6 @@ public class GameActivity extends AppCompatActivity {
                                 break;
                         }
                         fragmentTransaction.commit();
-
-                        /*
-                        if(serverResponse.equals("ONE") || serverResponse.equals("TWO") || serverResponse.equals("THREE")) {
-                            rabbit1.setEnabled(true);
-                            rabbit2.setEnabled(true);
-                            rabbit3.setEnabled(true);
-                            rabbit4.setEnabled(true);
-                            rabbit5.setEnabled(true);
-                            rabbit6.setEnabled(true);
-                            rabbit7.setEnabled(true);
-                            rabbit8.setEnabled(true);
-                        }*/
                     }
                 }
             });
@@ -669,7 +641,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendMessageGame() {
-        GameMessage gameMessage = new GameMessage();
         gameMessage.setPlayerId(playerId);
         gameMessage.setRoomId(roomId);
 
@@ -726,16 +697,6 @@ public class GameActivity extends AppCompatActivity {
             currentParent.removeView(clickedRabbit);
         }
         clickedRabbit.setVisibility(View.VISIBLE);
-        /*
-        rabbit1.setEnabled(false);
-        rabbit2.setEnabled(false);
-        rabbit3.setEnabled(false);
-        rabbit4.setEnabled(false);
-        rabbit5.setEnabled(false);
-        rabbit6.setEnabled(false);
-        rabbit7.setEnabled(false);
-        rabbit8.setEnabled(false);
-        */
 
         int count = -1;
         for (Field field : rabbitPosition) {

@@ -34,4 +34,5 @@
     <string name="joinButton">Join</string>
     <string name="refresh">Refresh</string>
     <string name="back_to_menu1">Back to menu</string>
+    <string name="waiting_for_the_other_player">Waiting for the other player</string>
 </resources>
