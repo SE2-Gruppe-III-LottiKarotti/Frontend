@@ -40,6 +40,7 @@ import java.util.Arrays;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
+import at.aau.serg.websocketdemoapp.msg.GuessCheaterMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.MoveMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
@@ -56,11 +57,14 @@ public class GameActivity extends AppCompatActivity {
     MoveMessage moveMessage;
     MoveMessage moveMessageReceived;
 
+    GuessCheaterMessage cheatMessage;
+    GuessCheaterMessage cheaterMessageReceived;
+
     //Android variables
     Button buttonDraw;
     Button buttonStart;
+    Button buttonCheater;
     Spinner spinnerCheat;
-
     Spinner spinnerGuessCheater;
     TextView playerNameView;
     TextView roomNameTitleView;
@@ -124,6 +128,7 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.addMessageHandler("DRAW_CARD", this::receiveDrawMessage);
         networkHandler.addMessageHandler("GAME", this::receiveGameMessage);
         networkHandler.addMessageHandler("MOVE", this::receiveMoveMessage);
+        networkHandler.addMessageHandler("CHEAT", this::receiveCheatMessage);
         networkHandler.connectToServer();
 
         drawCardMessage = new DrawCardMessage();
@@ -132,9 +137,12 @@ public class GameActivity extends AppCompatActivity {
         gameMessageReceived = new GameMessage();
         moveMessage = new MoveMessage();
         moveMessageReceived = new MoveMessage();
+        cheatMessage = new GuessCheaterMessage();
+        cheaterMessageReceived = new GuessCheaterMessage();
 
         buttonDraw = findViewById(R.id.btn_draw);
         buttonStart = findViewById(R.id.btn_chat);
+        buttonCheater = findViewById(R.id.btn_guess);
         spinnerCheat = findViewById(R.id.spinnerDrawMode);
         spinnerGuessCheater = findViewById(R.id.spinnerGuessCheater);
         playerNameView = findViewById(R.id.playerNameInput);
@@ -225,6 +233,10 @@ public class GameActivity extends AppCompatActivity {
 
         buttonStart.setOnClickListener((view) -> {
             sendMessageGame();
+        });
+
+        buttonCheater.setOnClickListener((view) -> {
+            sendMessageCheat();
         });
 
         if (currentPlayerId.equals(playerId)) {
@@ -415,6 +427,37 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private <T> void receiveCheatMessage(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+
+            Log.d("Cheat", "Hallo");
+            cheaterMessageReceived = gson.fromJson(jsonString, GuessCheaterMessage.class);
+            String playerToBlameId = cheaterMessageReceived.getPlayerToBlameId();
+            String accusingPlayerId = cheaterMessageReceived.getAccusingPlayerId();
+            rabbitPosition = cheaterMessageReceived.getFields();
+            String cheater = cheaterMessageReceived.getCheater();
+
+            String player = "";
+            if (cheater.equals("1")) {
+                player = playerToBlameId;
+            } else {
+                player = accusingPlayerId;
+            }
+
+            for (int i = rabbitPosition.length-1; i >= 0; i--) {
+                PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
+                if (playingPiece != null && playingPiece.getPlayerId().equals(player)) {
+                    removePlayingPiece(playingPiece, i);
+                    break;
+                }
+            }
+
+        currentPlayerId = playerToBlameId;
+        updatePlayerTurnText();
+        }
+    }
+
     private void setUpCheaterView(String playerCheat){
         String[] cheaterOptions = new String[]{playerCheat};
         ArrayAdapter<String> cheaterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, cheaterOptions);
@@ -496,6 +539,7 @@ public class GameActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("Cheat", "Hallo von remove");
                     int rabbitNumber = playingPiece.getPlayingPiece();
                     switch (rabbitNumber) {
                         case 1:
@@ -623,6 +667,16 @@ public class GameActivity extends AppCompatActivity {
         gameMessage.setRoomId(roomId);
 
         String jsonMessage = new Gson().toJson(gameMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
+    }
+
+    private void sendMessageCheat(){
+        cheatMessage.setRoomId(roomId);
+        cheatMessage.setAccusingPlayerId(currentPlayerId);
+        cheatMessage.setPlayerToBlameName(spinnerGuessCheater.getSelectedItem().toString());
+        cheatMessage.setFields(rabbitPosition);
+
+        String jsonMessage = new Gson().toJson(cheatMessage);
         networkHandler.sendMessageToServer(jsonMessage);
     }
 
