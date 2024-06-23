@@ -40,6 +40,7 @@ import java.util.Arrays;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
+import at.aau.serg.websocketdemoapp.msg.GuessCheaterMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.MoveMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
@@ -56,10 +57,15 @@ public class GameActivity extends AppCompatActivity {
     MoveMessage moveMessage;
     MoveMessage moveMessageReceived;
 
+    GuessCheaterMessage cheatMessage;
+    GuessCheaterMessage cheaterMessageReceived;
+
     //Android variables
     Button buttonDraw;
     Button buttonStart;
+    Button buttonCheater;
     Spinner spinnerCheat;
+    Spinner spinnerGuessCheater;
     TextView playerNameView;
     TextView roomNameTitleView;
     TextView playerTurnView;
@@ -84,6 +90,7 @@ public class GameActivity extends AppCompatActivity {
     private String roomName;
     private String playerId;
     private String playerName;
+    private String playerCheat;
 
     //Game variables
     private ImageView[] fields = new ImageView[27];
@@ -121,6 +128,7 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.addMessageHandler("DRAW_CARD", this::receiveDrawMessage);
         networkHandler.addMessageHandler("GAME", this::receiveGameMessage);
         networkHandler.addMessageHandler("MOVE", this::receiveMoveMessage);
+        networkHandler.addMessageHandler("CHEAT", this::receiveCheatMessage);
         networkHandler.connectToServer();
 
         drawCardMessage = new DrawCardMessage();
@@ -129,10 +137,14 @@ public class GameActivity extends AppCompatActivity {
         gameMessageReceived = new GameMessage();
         moveMessage = new MoveMessage();
         moveMessageReceived = new MoveMessage();
+        cheatMessage = new GuessCheaterMessage();
+        cheaterMessageReceived = new GuessCheaterMessage();
 
         buttonDraw = findViewById(R.id.btn_draw);
         buttonStart = findViewById(R.id.btn_chat);
+        buttonCheater = findViewById(R.id.btn_guess);
         spinnerCheat = findViewById(R.id.spinnerDrawMode);
+        spinnerGuessCheater = findViewById(R.id.spinnerGuessCheater);
         playerNameView = findViewById(R.id.playerNameInput);
         roomNameTitleView = findViewById(R.id.roomName);
         playerTurnView = findViewById(R.id.playerTurn);
@@ -221,6 +233,10 @@ public class GameActivity extends AppCompatActivity {
 
         buttonStart.setOnClickListener((view) -> {
             sendMessageGame();
+        });
+
+        buttonCheater.setOnClickListener((view) -> {
+            sendMessageCheat();
         });
 
         if (currentPlayerId.equals(playerId)) {
@@ -392,30 +408,76 @@ public class GameActivity extends AppCompatActivity {
 
             gameMessageReceived = gson.fromJson(jsonString, GameMessage.class);
             rabbitPosition = gameMessageReceived.getFields();
+            String[] playerNames = gameMessageReceived.getPlayerNames();
 
-            setMoleHoleImageViews();
+            for (String name : playerNames) {
+                if (!(playerName.equals(name)))
+                    playerCheat = name;
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setMoleHoleImageViews();
+                    setUpCheaterView(playerCheat);
+                    //buttonStart.setEnabled(false);
+                }
+            });
             //buttonStart.setEnabled(false);
         }
+    }
+
+    private <T> void receiveCheatMessage(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+
+            Log.d("Cheat", "Hallo");
+            cheaterMessageReceived = gson.fromJson(jsonString, GuessCheaterMessage.class);
+            String playerToBlameId = cheaterMessageReceived.getPlayerToBlameId();
+            String accusingPlayerId = cheaterMessageReceived.getAccusingPlayerId();
+            rabbitPosition = cheaterMessageReceived.getFields();
+            String cheater = cheaterMessageReceived.getCheater();
+
+            String player = "";
+            if (cheater.equals("1")) {
+                player = playerToBlameId;
+            } else {
+                player = accusingPlayerId;
+            }
+
+            for (int i = rabbitPosition.length-1; i >= 0; i--) {
+                PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
+                if (playingPiece != null && playingPiece.getPlayerId().equals(player)) {
+                    removePlayingPiece(playingPiece, i);
+                    break;
+                }
+            }
+
+        currentPlayerId = playerToBlameId;
+        updatePlayerTurnText();
+        }
+    }
+
+    private void setUpCheaterView(String playerCheat){
+        String[] cheaterOptions = new String[]{playerCheat};
+        ArrayAdapter<String> cheaterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, cheaterOptions);
+        spinnerGuessCheater.setAdapter(cheaterAdapter);
     }
 
     private <T> void receiveMoveMessage(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
+            String player = "";
 
             moveMessageReceived = gson.fromJson(jsonString, MoveMessage.class);
+            Log.d("MoveM", moveMessageReceived.toString());
             rabbitPosition = moveMessageReceived.getFields();
             PlayingPiece playingPiece = moveMessageReceived.getPlayingPiece();
-            String player = moveMessageReceived.getPlayingPiece().getPlayerId();
 
-            if(playingPiece==null){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setMoleHoleImageViews();
-                    }
-                });
-            }
-            else {
+            if(playingPiece == null){
+                setMoleHoleImageViews();
+            } else {
+                player = moveMessageReceived.getPlayingPiece().getPlayerId();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -453,25 +515,31 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setMoleHoleImageViews() {
-
-        for (int i = 0; i < rabbitPosition.length-1; i++) {
-            if (rabbitPosition[i].isOpen()) {
-                openHole = i;
-                fields[i].setBackgroundResource(R.color.black);
-                PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
-                if(playingPiece!=null){
-                    removePlayingPiece(playingPiece, i);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                for (int i = 0; i < rabbitPosition.length - 1; i++) {
+                    if (rabbitPosition[i].isOpen()) {
+                        Log.d("Mole", rabbitPosition[i].toString() + " " + i);
+                        Log.d("Mole", Arrays.toString(rabbitPosition));
+                        openHole = i;
+                        fields[i].setBackgroundResource(R.color.black);
+                        PlayingPiece playingPiece = rabbitPosition[i].getPlayingPiece();
+                        if (playingPiece != null) {
+                            removePlayingPiece(playingPiece, i);
+                        }
+                    } else {
+                        fields[i].setBackgroundResource(R.color.yellow);
+                    }
                 }
-            } else {
-                fields[i].setBackgroundResource(R.color.yellow);
             }
-        }
+        });
     }
 
     private void removePlayingPiece(PlayingPiece playingPiece, int position){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("Cheat", "Hallo von remove");
                     int rabbitNumber = playingPiece.getPlayingPiece();
                     switch (rabbitNumber) {
                         case 1:
@@ -594,7 +662,21 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendMessageGame() {
+        GameMessage gameMessage = new GameMessage();
+        gameMessage.setPlayerId(playerId);
+        gameMessage.setRoomId(roomId);
+
         String jsonMessage = new Gson().toJson(gameMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
+    }
+
+    private void sendMessageCheat(){
+        cheatMessage.setRoomId(roomId);
+        cheatMessage.setAccusingPlayerId(currentPlayerId);
+        cheatMessage.setPlayerToBlameName(spinnerGuessCheater.getSelectedItem().toString());
+        cheatMessage.setFields(rabbitPosition);
+
+        String jsonMessage = new Gson().toJson(cheatMessage);
         networkHandler.sendMessageToServer(jsonMessage);
     }
 
