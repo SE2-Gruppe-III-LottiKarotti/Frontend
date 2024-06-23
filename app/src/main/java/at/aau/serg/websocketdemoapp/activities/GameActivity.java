@@ -62,7 +62,7 @@ public class GameActivity extends AppCompatActivity {
 
     //Android variables
     Button buttonDraw;
-    Button buttonStart;
+    Button buttonChat;
     Button buttonCheater;
     Spinner spinnerCheat;
     Spinner spinnerGuessCheater;
@@ -91,6 +91,7 @@ public class GameActivity extends AppCompatActivity {
     private String playerId;
     private String playerName;
     private String playerCheat;
+    private String start;
 
     //Game variables
     private ImageView[] fields = new ImageView[27];
@@ -141,7 +142,7 @@ public class GameActivity extends AppCompatActivity {
         cheaterMessageReceived = new GuessCheaterMessage();
 
         buttonDraw = findViewById(R.id.btn_draw);
-        buttonStart = findViewById(R.id.btn_chat);
+        buttonChat = findViewById(R.id.btn_chat);
         buttonCheater = findViewById(R.id.btn_guess);
         spinnerCheat = findViewById(R.id.spinnerDrawMode);
         spinnerGuessCheater = findViewById(R.id.spinnerGuessCheater);
@@ -158,6 +159,8 @@ public class GameActivity extends AppCompatActivity {
         playerId = sharedPreferences.getString("playerId", null);
         playerName = sharedPreferences.getString("playerName", null);
         currentPlayerId = sharedPreferences.getString("playerToStart", null);
+        start = sharedPreferences.getString("start", null);
+
 
         playerNameView.setText(playerName);
         roomNameTitleView.setText(roomName);
@@ -231,9 +234,10 @@ public class GameActivity extends AppCompatActivity {
             sendMessageDraw();
         });
 
-        buttonStart.setOnClickListener((view) -> {
-            sendMessageGame();
+        /*
+        buttonChat.setOnClickListener((view) -> {
         });
+         */
 
         buttonCheater.setOnClickListener((view) -> {
             sendMessageCheat();
@@ -339,7 +343,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
         currentParent1 = (ViewGroup) field27.getParent();
-        currentParent2 = (ViewGroup) buttonStart.getParent();
         field27.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -361,6 +364,10 @@ public class GameActivity extends AppCompatActivity {
         rabbit8.setEnabled(false);
         field27.setEnabled(false);
         */
+
+        if(start.equals("player2joined")){
+            sendMessageGame();
+        }
 
         connectToServer();
     }

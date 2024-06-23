@@ -184,6 +184,7 @@ public class OpenRoomActivity extends AppCompatActivity {
                         editor.putString("playerId", playerId);
                         editor.putString("playerName", playerName);
                         editor.putString("playerToStart", playerId);
+                        editor.putString("start", "player1joined");
                         editor.apply();
 
                         // Redirect to the next activity
