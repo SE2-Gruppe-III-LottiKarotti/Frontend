@@ -337,6 +337,21 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                field27.setEnabled(false);
+                rabbit1.setEnabled(false);
+                rabbit2.setEnabled(false);
+                rabbit3.setEnabled(false);
+                rabbit4.setEnabled(false);
+                rabbit5.setEnabled(false);
+                rabbit6.setEnabled(false);
+                rabbit7.setEnabled(false);
+                rabbit8.setEnabled(false);
+            }
+        });
+
         //Send moveMessage when player2 joins the room to setup gameboard
         if(start.equals("player2joined")){
             sendMessageGame();
@@ -520,6 +535,7 @@ public class GameActivity extends AppCompatActivity {
                         fields[i].setBackgroundResource(R.color.yellow);
                     }
                 }
+                field27.setEnabled(false);
             }
         });
     }
