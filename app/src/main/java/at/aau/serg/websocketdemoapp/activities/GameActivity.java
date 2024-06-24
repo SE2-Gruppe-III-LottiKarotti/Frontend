@@ -337,19 +337,16 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                field27.setEnabled(false);
-                rabbit1.setEnabled(false);
-                rabbit2.setEnabled(false);
-                rabbit3.setEnabled(false);
-                rabbit4.setEnabled(false);
-                rabbit5.setEnabled(false);
-                rabbit6.setEnabled(false);
-                rabbit7.setEnabled(false);
-                rabbit8.setEnabled(false);
-            }
+        runOnUiThread(() -> {
+            field27.setEnabled(false);
+            rabbit1.setEnabled(false);
+            rabbit2.setEnabled(false);
+            rabbit3.setEnabled(false);
+            rabbit4.setEnabled(false);
+            rabbit5.setEnabled(false);
+            rabbit6.setEnabled(false);
+            rabbit7.setEnabled(false);
+            rabbit8.setEnabled(false);
         });
 
         //Send moveMessage when player2 joins the room to setup gameboard
@@ -489,28 +486,26 @@ public class GameActivity extends AppCompatActivity {
 
     //methods to make changes on the UI
     private void updatePlayerTurnText() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                if (playerId.equals(currentPlayerId)) {
-                    playerTurnView.setText(playerName + " its your turn");
-                    buttonDraw.setEnabled(true);
-                    buttonDraw.postInvalidate();
-                    if(!firstRound) {
-                        buttonCheater.setEnabled(true);
-                        buttonCheater.postInvalidate();
-                    } else{
-                        buttonCheater.setEnabled(false);
-                        buttonCheater.postInvalidate();
-                    }
-                } else {
-                    playerTurnView.setText(R.string.waiting_for_the_other_player);
-                    buttonDraw.setEnabled(false);
-                    buttonDraw.postInvalidate();
+        runOnUiThread(() -> {
+            if (playerId.equals(currentPlayerId)) {
+                playerTurnView.setText(playerName + " its your turn");
+                buttonDraw.setEnabled(true);
+                buttonDraw.postInvalidate();
+                if(!firstRound) {
+                    buttonCheater.setEnabled(true);
+                    buttonCheater.postInvalidate();
+                } else{
                     buttonCheater.setEnabled(false);
                     buttonCheater.postInvalidate();
                 }
-                firstRound = false;
+            } else {
+                playerTurnView.setText(R.string.waiting_for_the_other_player);
+                buttonDraw.setEnabled(false);
+                buttonDraw.postInvalidate();
+                buttonCheater.setEnabled(false);
+                buttonCheater.postInvalidate();
             }
+            firstRound = false;
         });
     }
 
@@ -760,19 +755,16 @@ public class GameActivity extends AppCompatActivity {
                 clickedRabbit.setY(targetY);
             }
         }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                field27.setEnabled(false);
-                rabbit1.setEnabled(false);
-                rabbit2.setEnabled(false);
-                rabbit3.setEnabled(false);
-                rabbit4.setEnabled(false);
-                rabbit5.setEnabled(false);
-                rabbit6.setEnabled(false);
-                rabbit7.setEnabled(false);
-                rabbit8.setEnabled(false);
-            }
+        runOnUiThread(() -> {
+            field27.setEnabled(false);
+            rabbit1.setEnabled(false);
+            rabbit2.setEnabled(false);
+            rabbit3.setEnabled(false);
+            rabbit4.setEnabled(false);
+            rabbit5.setEnabled(false);
+            rabbit6.setEnabled(false);
+            rabbit7.setEnabled(false);
+            rabbit8.setEnabled(false);
         });
     }
 }
