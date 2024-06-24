@@ -222,11 +222,6 @@ public class GameActivity extends AppCompatActivity {
             sendMessageDraw();
         });
 
-        /*
-        buttonChat.setOnClickListener((view) -> {
-        });
-         */
-
         buttonCheater.setOnClickListener((view) -> {
             sendMessageCheat();
         });
@@ -342,6 +337,18 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        runOnUiThread(() -> {
+            field27.setEnabled(false);
+            rabbit1.setEnabled(false);
+            rabbit2.setEnabled(false);
+            rabbit3.setEnabled(false);
+            rabbit4.setEnabled(false);
+            rabbit5.setEnabled(false);
+            rabbit6.setEnabled(false);
+            rabbit7.setEnabled(false);
+            rabbit8.setEnabled(false);
+        });
+
         //Send moveMessage when player2 joins the room to setup gameboard
         if(start.equals("player2joined")){
             sendMessageGame();
@@ -359,32 +366,7 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private void updatePlayerTurnText() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                if (playerId.equals(currentPlayerId)) {
-                    playerTurnView.setText(playerName + " its your turn");
-                    buttonDraw.setEnabled(true);
-                    buttonDraw.postInvalidate();
-                    if(!firstRound) {
-                        buttonCheater.setEnabled(true);
-                        buttonCheater.postInvalidate();
-                    } else{
-                        buttonCheater.setEnabled(false);
-                        buttonCheater.postInvalidate();
-                    }
-                } else {
-                    playerTurnView.setText(R.string.waiting_for_the_other_player);
-                    buttonDraw.setEnabled(false);
-                    buttonDraw.postInvalidate();
-                    buttonCheater.setEnabled(false);
-                    buttonCheater.postInvalidate();
-                }
-                firstRound = false;
-            }
-        });
-    }
-
+    //methods to receive messages from the server
     private <T> void receiveDrawMessage(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
@@ -465,29 +447,33 @@ public class GameActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (playingPiece.getPlayingPiece() == 1) {
-                            moveRabbit(rabbit1, playingPiece, firstClick1);
-                        }
-                        if (playingPiece.getPlayingPiece() == 2) {
-                            moveRabbit(rabbit2, playingPiece, firstClick2);
-                        }
-                        if (playingPiece.getPlayingPiece() == 3) {
-                            moveRabbit(rabbit3, playingPiece, firstClick3);
-                        }
-                        if (playingPiece.getPlayingPiece() == 4) {
-                            moveRabbit(rabbit4, playingPiece, firstClick4);
-                        }
-                        if (playingPiece.getPlayingPiece() == 5) {
-                            moveRabbit(rabbit5, playingPiece, firstClick5);
-                        }
-                        if (playingPiece.getPlayingPiece() == 6) {
-                            moveRabbit(rabbit6, playingPiece, firstClick6);
-                        }
-                        if (playingPiece.getPlayingPiece() == 7) {
-                            moveRabbit(rabbit7, playingPiece, firstClick7);
-                        }
-                        if (playingPiece.getPlayingPiece() == 8) {
-                            moveRabbit(rabbit8, playingPiece, firstClick8);
+                        switch(playingPiece.getPlayingPiece()) {
+                            case 1:
+                                moveRabbit(rabbit1, playingPiece, firstClick1);
+                                break;
+                            case 2:
+                                moveRabbit(rabbit2, playingPiece, firstClick2);
+                                break;
+                            case 3:
+                                moveRabbit(rabbit3, playingPiece, firstClick3);
+                                break;
+                            case 4:
+                                moveRabbit(rabbit4, playingPiece, firstClick4);
+                                break;
+                            case 5:
+                                moveRabbit(rabbit5, playingPiece, firstClick5);
+                                break;
+                            case 6:
+                                moveRabbit(rabbit6, playingPiece, firstClick6);
+                                break;
+                            case 7:
+                                moveRabbit(rabbit7, playingPiece, firstClick7);
+                                break;
+                            case 8:
+                                moveRabbit(rabbit8, playingPiece, firstClick8);
+                                break;
+                            default:
+                                break;
                         }
                     }
                 });
@@ -496,6 +482,31 @@ public class GameActivity extends AppCompatActivity {
             currentPlayerId = nextPlayerId;
             updatePlayerTurnText();
         }
+    }
+
+    //methods to make changes on the UI
+    private void updatePlayerTurnText() {
+        runOnUiThread(() -> {
+            if (playerId.equals(currentPlayerId)) {
+                playerTurnView.setText(playerName + " its your turn");
+                buttonDraw.setEnabled(true);
+                buttonDraw.postInvalidate();
+                if(!firstRound) {
+                    buttonCheater.setEnabled(true);
+                    buttonCheater.postInvalidate();
+                } else{
+                    buttonCheater.setEnabled(false);
+                    buttonCheater.postInvalidate();
+                }
+            } else {
+                playerTurnView.setText(R.string.waiting_for_the_other_player);
+                buttonDraw.setEnabled(false);
+                buttonDraw.postInvalidate();
+                buttonCheater.setEnabled(false);
+                buttonCheater.postInvalidate();
+            }
+            firstRound = false;
+        });
     }
 
     private void setUpCheaterView(String playerCheat){
@@ -519,6 +530,7 @@ public class GameActivity extends AppCompatActivity {
                         fields[i].setBackgroundResource(R.color.yellow);
                     }
                 }
+                field27.setEnabled(false);
             }
         });
     }
@@ -571,21 +583,24 @@ public class GameActivity extends AppCompatActivity {
                     buttonDraw.postInvalidate();
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
+                    boolean normalCard = false;
                     // Handle default case
                     if (serverResponse != null) {
                         switch (serverResponse) {
                             case "ONE":
                                 Rabbit1 rabbit1 = new Rabbit1();
                                 fragmentTransaction.add(R.id.fragmentContainer, rabbit1, "Rabbit1Tag");
+                                normalCard = true;
                                 break;
                             case "TWO":
                                 Rabbit2 rabbit2 = new Rabbit2();
                                 fragmentTransaction.add(R.id.fragmentContainer, rabbit2, "Rabbit2Tag");
+                                normalCard = true;
                                 break;
                             case "THREE":
                                 Rabbit3 rabbit3 = new Rabbit3();
                                 fragmentTransaction.add(R.id.fragmentContainer, rabbit3, "Rabbit3Tag");
+                                normalCard = true;
                                 break;
                             case "CARROT":
                                 Carrot carrot = new Carrot();
@@ -596,6 +611,16 @@ public class GameActivity extends AppCompatActivity {
                                 break;
                         }
                         fragmentTransaction.commit();
+                    }
+                    if(normalCard) {
+                        rabbit1.setEnabled(true);
+                        rabbit2.setEnabled(true);
+                        rabbit3.setEnabled(true);
+                        rabbit4.setEnabled(true);
+                        rabbit5.setEnabled(true);
+                        rabbit6.setEnabled(true);
+                        rabbit7.setEnabled(true);
+                        rabbit8.setEnabled(true);
                     }
                 }
             });
@@ -627,17 +652,16 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    //methods to send the message to the server
     private void sendMessageDraw() {
-        {
-            drawCardMessage.setMessageType(MessageType.DRAW_CARD);
-            drawCardMessage.setPlayerID(playerId);
-            drawCardMessage.setRoomID(roomId);
-            drawCardMessage.setCard(spinnerCheat.getSelectedItem().toString());
-            drawCardMessage.setActionTypeDrawCard(ASK_FOR_CARD);
+        drawCardMessage.setMessageType(MessageType.DRAW_CARD);
+        drawCardMessage.setPlayerID(playerId);
+        drawCardMessage.setRoomID(roomId);
+        drawCardMessage.setCard(spinnerCheat.getSelectedItem().toString());
+        drawCardMessage.setActionTypeDrawCard(ASK_FOR_CARD);
 
-            String jsonMessage = new Gson().toJson(drawCardMessage);
-            networkHandler.sendMessageToServer(jsonMessage);
-        }
+        String jsonMessage = new Gson().toJson(drawCardMessage);
+        networkHandler.sendMessageToServer(jsonMessage);
     }
 
     private void sendMessageGame() {
@@ -731,6 +755,17 @@ public class GameActivity extends AppCompatActivity {
                 clickedRabbit.setY(targetY);
             }
         }
+        runOnUiThread(() -> {
+            field27.setEnabled(false);
+            rabbit1.setEnabled(false);
+            rabbit2.setEnabled(false);
+            rabbit3.setEnabled(false);
+            rabbit4.setEnabled(false);
+            rabbit5.setEnabled(false);
+            rabbit6.setEnabled(false);
+            rabbit7.setEnabled(false);
+            rabbit8.setEnabled(false);
+        });
     }
 }
 
