@@ -19,9 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
@@ -56,7 +61,25 @@ public class OpenRoomActivity extends AppCompatActivity {
             return insets;
         });
 
-        sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
+        Context context = getApplicationContext();
+
+        String masterKeyAlias = null;
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    "GamePrefs",
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         editTextRoomName = findViewById(R.id.editTextRoomName);
         spinnerNumPlayers = findViewById(R.id.spinnerNumPlayers);

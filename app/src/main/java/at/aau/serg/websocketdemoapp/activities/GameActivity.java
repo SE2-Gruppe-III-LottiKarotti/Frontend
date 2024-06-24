@@ -23,6 +23,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import at.aau.serg.websocketdemoapp.fragments.Carrot;
 import at.aau.serg.websocketdemoapp.fragments.Rabbit1;
@@ -36,6 +38,8 @@ import at.aau.serg.websocketdemoapp.msg.DrawCardMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 import at.aau.serg.websocketdemoapp.R;
@@ -121,7 +125,25 @@ public class GameActivity extends AppCompatActivity {
             return insets;
         });
 
-        sharedPreferences = getSharedPreferences("GamePrefs", Context.MODE_PRIVATE);
+        Context context = getApplicationContext();
+
+        String masterKeyAlias = null;
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    "GamePrefs",
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         networkHandler = new WebSocketClient();
         networkHandler.addMessageHandler("DRAW_CARD", this::receiveDrawMessage);
