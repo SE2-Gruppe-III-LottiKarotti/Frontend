@@ -116,9 +116,6 @@ public class JoinRoomActivity extends AppCompatActivity {
             Toast.makeText(JoinRoomActivity.this, "room name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (roomNameEditText.getText().toString().isEmpty()) {
-            roomNameToTransfer = "TestRoom";
-        }
 
         joinRoomMsg.setRoomName(roomNameToTransfer);
         joinRoomMsg.setPlayerName(playerNameEditText.getText().toString());
