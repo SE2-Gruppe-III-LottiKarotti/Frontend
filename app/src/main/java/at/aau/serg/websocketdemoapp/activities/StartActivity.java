@@ -18,8 +18,6 @@ public class StartActivity extends AppCompatActivity {
     Button buttonOpenRoom;
     Button buttonJoinRoom;
 
-    Button buttonReJoinRoom;
-
     Button buttonInstructions;
 
     @Override
@@ -35,7 +33,6 @@ public class StartActivity extends AppCompatActivity {
 
         buttonOpenRoom = findViewById(R.id.buttonOpenRoom);
         buttonJoinRoom = findViewById(R.id.buttonJoinRoom);
-        buttonReJoinRoom = findViewById(R.id.buttonRejoinRoom);
         buttonInstructions = findViewById(R.id.buttonInstructions);
 
         buttonOpenRoom.setOnClickListener(new View.OnClickListener() {
@@ -52,12 +49,6 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        buttonReJoinRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openRejoinRoomActivity();
-            }
-        });
 
         buttonInstructions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +57,6 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
 
 
     }
@@ -82,15 +71,6 @@ public class StartActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void openRejoinRoomActivity() {
-        //Intent intent = new Intent(this, RejoinRoomActivity.class);
-        //startActivity(intent);
-    }
-
-    private void openInstructionsActivity() {
-        Intent intent = new Intent(this, Instructions.class);
-        startActivity(intent);
-    }
 
 
 }
