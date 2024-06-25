@@ -5,6 +5,7 @@ import static at.aau.serg.websocketdemoapp.msg.DrawCardMessage.ActionTypeDrawCar
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -42,13 +43,16 @@ import java.security.GeneralSecurityException;
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
 import at.aau.serg.websocketdemoapp.msg.GuessCheaterMessage;
+import at.aau.serg.websocketdemoapp.msg.HeartbeatMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.MoveMessage;
+import at.aau.serg.websocketdemoapp.networking.Heartbeat;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameActivity extends AppCompatActivity {
     //Client/Server variables
+    Heartbeat heartbeat;
     WebSocketClient networkHandler;
     Gson gson = new Gson();
     DrawCardMessage drawCardMessage;
@@ -147,6 +151,12 @@ public class GameActivity extends AppCompatActivity {
         networkHandler.addMessageHandler(MessageType.GAME.toString(), this::receiveGameMessage);
         networkHandler.addMessageHandler(MessageType.MOVE.toString(), this::receiveMoveMessage);
         networkHandler.addMessageHandler(MessageType.CHEAT.toString(), this::receiveCheatMessage);
+        //
+        networkHandler.addMessageHandler(MessageType.HEARTBEAT.toString(), this::receiveHeartbeatMessage);
+        /*heartbeat*/
+        heartbeat = new Heartbeat(networkHandler);
+        heartbeat.start();
+
         networkHandler.connectToServer();
 
         drawCardMessage = new DrawCardMessage();
@@ -385,6 +395,14 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (heartbeat != null) {
+            heartbeat.stop();
+        }
+    }
+
     //methods to receive messages from the server
     private <T> void receiveDrawMessage(T message) {
         if (message instanceof String) {
@@ -417,6 +435,20 @@ public class GameActivity extends AppCompatActivity {
                     setUpCheaterView(playerCheat);
                 }
             });
+        }
+    }
+
+    private <T> void receiveHeartbeatMessage(T message) {
+        if (message instanceof String) {
+            String jsonString = (String) message;
+            HeartbeatMessage hBmessage = gson.fromJson(jsonString, HeartbeatMessage.class);
+            Log.d("LOGG", "HEARTBEAT message received: " + hBmessage.getText()); // Add this line
+            if (hBmessage.getText().equals("pong")) {
+                Log.d("heartbeat", hBmessage.toString());
+                return;
+            }
+
+
         }
     }
 

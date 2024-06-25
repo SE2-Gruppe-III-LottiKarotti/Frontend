@@ -29,8 +29,11 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.BaseMessage;
+import at.aau.serg.websocketdemoapp.msg.HeartbeatMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoapp.networking.Heartbeat;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class OpenRoomActivity extends AppCompatActivity {
@@ -48,6 +51,8 @@ public class OpenRoomActivity extends AppCompatActivity {
     WebSocketClient networkHandler;
 
     SharedPreferences sharedPreferences;
+
+    Heartbeat heartbeat;
 
     private final Gson gson = new Gson();
 
@@ -95,6 +100,9 @@ public class OpenRoomActivity extends AppCompatActivity {
 
         //NEW
         networkHandler = new WebSocketClient();
+        /*heartbeat*/
+        heartbeat = new Heartbeat(networkHandler);
+        heartbeat.start();
 
         //call connection
         connectToWebSocketServer();
@@ -120,6 +128,7 @@ public class OpenRoomActivity extends AppCompatActivity {
     //NEW
     private void connectToWebSocketServer() {
         networkHandler.addMessageHandler(MessageType.OPEN_ROOM.toString(), this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.HEARTBEAT.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
     }
 
@@ -164,6 +173,14 @@ public class OpenRoomActivity extends AppCompatActivity {
         connectToWebSocketServer();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (heartbeat != null) {
+            heartbeat.stop();
+        }
+    }
+
 
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
@@ -171,47 +188,62 @@ public class OpenRoomActivity extends AppCompatActivity {
             Log.d("LOGG", "reached entry messageReceivedFromServer");
             // deserialize
             try {
-                OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
+                BaseMessage baseMessage = gson.fromJson(jsonString, BaseMessage.class);
 
-                if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK) {
-                    // Handle OPEN_ROOM_OK action type
-                    runOnUiThread(() -> {
-                        Log.d("Network", "OPEN_ROOM_OK received: " + jsonString);
-                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_OK messageReceivedFromServer");
-                        Log.d("LOGG", jsonString);
-
-                        responseMessage.setText(jsonString);
-
-                        String roomId = openRoomMessage.getRoomId();
-                        String roomName = openRoomMessage.getRoomName();
-                        String playerId = openRoomMessage.getPlayerId();
-                        String playerName = openRoomMessage.getPlayerName();
-
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("roomId", roomId);
-                        editor.putString("roomName", roomName);
-                        editor.putString("playerId", playerId);
-                        editor.putString("playerName", playerName);
-                        editor.putString("playerToStart", playerId);
-                        editor.putString("start", "player1joined");
-                        editor.apply();
-
-                        Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
-
-                        startActivity(intent);
-                        finish();
-                    });
-                } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
-                    // Handle OPEN_ROOM_ERR action type
-                    runOnUiThread(() -> {
-                        Log.d("Network", "OPEN_ROOM_ERR received: " + jsonString);
-                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
-                        responseMessage.setText(jsonString);
-
-                        // display error msg
-                        Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
-                    });
+                if (baseMessage.getMessageType().equals(MessageType.HEARTBEAT)) {
+                    HeartbeatMessage hbMessage = gson.fromJson(jsonString, HeartbeatMessage.class);
+                    Log.d("LOGG", "HEARTBEAT message received: " + hbMessage.getText()); // Add this line
+                    if (hbMessage.getText().equals("pong")) {
+                        Log.d("heartbeat", jsonString);
+                        return;
+                    }
                 }
+                if (baseMessage.getMessageType().equals(MessageType.OPEN_ROOM)) {
+                    //
+                    OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
+
+                    if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK) {
+                        // Handle OPEN_ROOM_OK action type
+                        runOnUiThread(() -> {
+                            Log.d("Network", "OPEN_ROOM_OK received: " + jsonString);
+                            Log.d("LOGG", "reached tryBlock OPEN_ROOM_OK messageReceivedFromServer");
+                            Log.d("LOGG", jsonString);
+
+                            responseMessage.setText(jsonString);
+
+                            String roomId = openRoomMessage.getRoomId();
+                            String roomName = openRoomMessage.getRoomName();
+                            String playerId = openRoomMessage.getPlayerId();
+                            String playerName = openRoomMessage.getPlayerName();
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("roomId", roomId);
+                            editor.putString("roomName", roomName);
+                            editor.putString("playerId", playerId);
+                            editor.putString("playerName", playerName);
+                            editor.putString("playerToStart", playerId);
+                            editor.putString("start", "player1joined");
+                            editor.apply();
+
+                            Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
+
+                            startActivity(intent);
+                            finish();
+                        });
+                    } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
+                        // Handle OPEN_ROOM_ERR action type
+                        runOnUiThread(() -> {
+                            Log.d("Network", "OPEN_ROOM_ERR received: " + jsonString);
+                            Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
+                            responseMessage.setText(jsonString);
+
+                            // display error msg
+                            Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                }
+
+
 
             } catch (JsonSyntaxException e) {
                 // json error

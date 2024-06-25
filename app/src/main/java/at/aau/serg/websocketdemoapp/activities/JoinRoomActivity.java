@@ -26,9 +26,11 @@ import java.security.GeneralSecurityException;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.BaseMessage;
+import at.aau.serg.websocketdemoapp.msg.HeartbeatMessage;
 import at.aau.serg.websocketdemoapp.msg.JoinRoomMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.RoomListMessage;
+import at.aau.serg.websocketdemoapp.networking.Heartbeat;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class JoinRoomActivity extends AppCompatActivity {
@@ -40,6 +42,8 @@ public class JoinRoomActivity extends AppCompatActivity {
     Button joinButton;
     Button backButton;
     SharedPreferences sharedPreferences;
+
+    Heartbeat heartbeat;
 
     private final Gson gson = new Gson();
 
@@ -81,6 +85,9 @@ public class JoinRoomActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         networkHandler = new WebSocketClient();
+        /*heartbeat*/
+        heartbeat = new Heartbeat(networkHandler);
+        heartbeat.start();
         connectToWebSocketServer();
 
 
@@ -100,6 +107,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     private void connectToWebSocketServer() {
         networkHandler.addMessageHandler(MessageType.JOIN_ROOM.toString(), this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.HEARTBEAT.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
 
     }
@@ -137,6 +145,14 @@ public class JoinRoomActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         connectToWebSocketServer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (heartbeat != null) {
+            heartbeat.stop();
+        }
     }
 
 
@@ -178,6 +194,14 @@ public class JoinRoomActivity extends AppCompatActivity {
         }
     }
 
+    private void handleHeartbeatMessage(HeartbeatMessage hBmessage) {
+        Log.d("LOGG", "HEARTBEAT message received: " + hBmessage.getText()); // Add this line
+        if (hBmessage.getText().equals("pong")) {
+            Log.d("heartbeat", hBmessage.toString());
+            return;
+        }
+    }
+
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
@@ -195,6 +219,10 @@ public class JoinRoomActivity extends AppCompatActivity {
                         RoomListMessage roomListMessage = gson.fromJson(jsonString, RoomListMessage.class);
                         //handleRoomListMessage(roomListMessage);
                         /*not implemented at the moment*/
+                        break;
+                    case HEARTBEAT:
+                        HeartbeatMessage heartbeatMessageIncoming = gson.fromJson(jsonString, HeartbeatMessage.class);
+                        handleHeartbeatMessage(heartbeatMessageIncoming);
                         break;
                     default:
                         Log.d("error", "unknown message type " + jsonString);
