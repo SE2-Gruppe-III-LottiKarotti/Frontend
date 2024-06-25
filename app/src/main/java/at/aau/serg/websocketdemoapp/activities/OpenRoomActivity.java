@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
@@ -118,7 +119,7 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        networkHandler.addMessageHandler("OPEN_ROOM", this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.OPEN_ROOM.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
     }
 

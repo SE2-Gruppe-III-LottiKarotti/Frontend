@@ -99,7 +99,7 @@ public class JoinRoomActivity extends AppCompatActivity {
 
 
     private void connectToWebSocketServer() {
-        networkHandler.addMessageHandler("JOIN_ROOM", this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.JOIN_ROOM.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
 
     }
