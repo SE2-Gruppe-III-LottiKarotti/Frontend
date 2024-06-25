@@ -95,7 +95,7 @@ public class OpenRoomActivity extends AppCompatActivity {
         //NEW
         networkHandler = new WebSocketClient();
 
-        //verbindung aufrufen
+        //call connection
         connectToWebSocketServer();
 
         buttonOpenRoomNow.setOnClickListener(new View.OnClickListener() {
@@ -122,17 +122,9 @@ public class OpenRoomActivity extends AppCompatActivity {
         networkHandler.connectToServer();
     }
 
-    //TODO: to handle this topic: use more than one message maybe... as atomic as possible
-
 
     private void sendMessage() {
-        /*CreateRoomMessage createRoomMessage = new CreateRoomMessage();
-        createRoomMessage.setMessageType(MessageType.CREATE_ROOM);
-        createRoomMessage.setRoomName(editTextCreator.getText().toString());
-        createRoomMessage.setRoomName(editTextRoomName.getText().toString());
 
-        String jsonMessage = new Gson().toJson(createRoomMessage);
-        networkHandler.sendMessageToServer(jsonMessage);*/
 
         //read input
         String roomName = editTextRoomName.getText().toString();
@@ -140,23 +132,24 @@ public class OpenRoomActivity extends AppCompatActivity {
         //check for size
 
         if (roomName.length() < 4 || roomName.length() > 10) {
-            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 10 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OpenRoomActivity.this, "room name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //messageIdentifierOpenRoom = UUID.randomUUID().toString();
 
-        //set message starts here...
         String finalNumPlayers = spinnerNumPlayers.getSelectedItem().toString();
         String creatorName = editTextCreator.getText().toString();
+
+        if (creatorName.length() < 4 || creatorName.length() > 10) {
+            Toast.makeText(OpenRoomActivity.this, "player name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
 
         OpenRoomMessage openRoomMessage = new OpenRoomMessage();
         openRoomMessage.setPlayerName(creatorName);
         openRoomMessage.setNumPlayers(finalNumPlayers);
         openRoomMessage.setRoomName(roomName);
-
-        //wichtig, um danach die message beim Empfang zu identifizieren
 
 
         //json
@@ -170,20 +163,12 @@ public class OpenRoomActivity extends AppCompatActivity {
         connectToWebSocketServer();
     }
 
-    /*private void messageReceivedFromServer(String message) {
-        // TODO handle received messages
-        runOnUiThread(() -> {
-            Log.d("OPEN ROOM", message);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            Intent intent =  new Intent(this, GameActivity.class);
-            startActivity(intent);
-        });
-    }*/
+
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
             Log.d("LOGG", "reached entry messageReceivedFromServer");
-            // Versuche, die Nachricht als TestMessage zu deserialisieren
+            // deserialize
             try {
                 OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
 
@@ -210,11 +195,10 @@ public class OpenRoomActivity extends AppCompatActivity {
                         editor.putString("start", "player1joined");
                         editor.apply();
 
-                        // Redirect to the next activity
                         Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
 
                         startActivity(intent);
-                        finish(); // Close this activity
+                        finish();
                     });
                 } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
                     // Handle OPEN_ROOM_ERR action type
@@ -223,13 +207,13 @@ public class OpenRoomActivity extends AppCompatActivity {
                         Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
                         responseMessage.setText(jsonString);
 
-                        // Display error message to the user
+                        // display error msg
                         Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
                     });
                 }
 
             } catch (JsonSyntaxException e) {
-                // Falls die Deserialisierung fehlschlägt, zeige den gesamten Text der Nachricht an
+                // json error
                 runOnUiThread(() -> {
                     Log.d("Network", "Failed to parse JSON message: " + jsonString, e);
                     Log.d("LOGG", "reached errorBlock messageReceivedFromServer");
