@@ -2,11 +2,9 @@ package at.aau.serg.websocketdemoapp.activities;
 
 import static at.aau.serg.websocketdemoapp.msg.DrawCardMessage.ActionTypeDrawCard.ASK_FOR_CARD;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -40,7 +38,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.GameMessage;
@@ -146,10 +143,10 @@ public class GameActivity extends AppCompatActivity {
         }
 
         networkHandler = new WebSocketClient();
-        networkHandler.addMessageHandler("DRAW_CARD", this::receiveDrawMessage);
-        networkHandler.addMessageHandler("GAME", this::receiveGameMessage);
-        networkHandler.addMessageHandler("MOVE", this::receiveMoveMessage);
-        networkHandler.addMessageHandler("CHEAT", this::receiveCheatMessage);
+        networkHandler.addMessageHandler(MessageType.DRAW_CARD.toString(), this::receiveDrawMessage);
+        networkHandler.addMessageHandler(MessageType.GAME.toString(), this::receiveGameMessage);
+        networkHandler.addMessageHandler(MessageType.MOVE.toString(), this::receiveMoveMessage);
+        networkHandler.addMessageHandler(MessageType.CHEAT.toString(), this::receiveCheatMessage);
         networkHandler.connectToServer();
 
         drawCardMessage = new DrawCardMessage();
