@@ -19,16 +19,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 import at.aau.serg.websocketdemoapp.R;
-import at.aau.serg.websocketdemoapp.msg.CreateRoomMessage;
-import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
-import at.aau.serg.websocketdemoapp.msg.RoomSetupMessage;
-import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class OpenRoomActivity extends AppCompatActivity {
@@ -60,8 +61,25 @@ public class OpenRoomActivity extends AppCompatActivity {
             return insets;
         });
 
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        Context context = getApplicationContext();
 
+        String masterKeyAlias = null;
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    "GamePrefs",
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         editTextRoomName = findViewById(R.id.editTextRoomName);
         spinnerNumPlayers = findViewById(R.id.spinnerNumPlayers);
@@ -69,7 +87,6 @@ public class OpenRoomActivity extends AppCompatActivity {
         buttonOpenRoomNow = findViewById(R.id.buttonOpenRoomNow);
         backButton = findViewById(R.id.backButton);
         responseMessage = findViewById(R.id.textViewResponse);
-
 
         String[] playerOptions = new String [] {"2", "3", "4"};
         ArrayAdapter<String> playerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, playerOptions);
@@ -101,7 +118,8 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        networkHandler.connectToServer(this::messageReceivedFromServer);
+        networkHandler.addMessageHandler("OPEN_ROOM", this::messageReceivedFromServer);
+        networkHandler.connectToServer();
     }
 
     //TODO: to handle this topic: use more than one message maybe... as atomic as possible
@@ -178,8 +196,23 @@ public class OpenRoomActivity extends AppCompatActivity {
 
                         responseMessage.setText(jsonString);
 
+                        String roomId = openRoomMessage.getRoomId();
+                        String roomName = openRoomMessage.getRoomName();
+                        String playerId = openRoomMessage.getPlayerId();
+                        String playerName = openRoomMessage.getPlayerName();
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("roomId", roomId);
+                        editor.putString("roomName", roomName);
+                        editor.putString("playerId", playerId);
+                        editor.putString("playerName", playerName);
+                        editor.putString("playerToStart", playerId);
+                        editor.putString("start", "player1joined");
+                        editor.apply();
+
                         // Redirect to the next activity
-                        Intent intent = new Intent(OpenRoomActivity.this, GameboardActivityTest.class);
+                        Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
+
                         startActivity(intent);
                         finish(); // Close this activity
                     });

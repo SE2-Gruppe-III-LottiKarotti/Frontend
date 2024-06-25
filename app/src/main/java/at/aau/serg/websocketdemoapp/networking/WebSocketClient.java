@@ -2,6 +2,13 @@ package at.aau.serg.websocketdemoapp.networking;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,14 +22,18 @@ public class WebSocketClient {
      * localhost from the Android emulator is reachable as 10.0.2.2
      * https://developer.android.com/studio/run/emulator-networking
      */
-    private final String WEBSOCKET_URI = "ws://10.0.2.2:8080/websocket-example-handler";
+    //private final String WEBSOCKET_URI = "ws://10.0.2.2:8080/websocket-example-handler";
+    private final String WEBSOCKET_URI = "ws://192.168.0.178:8080/websocket-example-handler";
 
     private WebSocket webSocket;
+    private Map<String, WebSocketMessageHandler<String>> messageHandlers;
 
-    public void connectToServer(WebSocketMessageHandler<String> messageHandler) {
-        if (messageHandler == null)
-            throw new IllegalArgumentException("messageHandler is required");
 
+    public WebSocketClient() {
+        messageHandlers = new HashMap<>();
+    }
+
+    public void connectToServer() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(WEBSOCKET_URI)
@@ -36,7 +47,16 @@ public class WebSocketClient {
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                messageHandler.onMessageReceived(text);
+                Gson gson = new Gson();
+                JsonElement jsonElement = gson.fromJson(text, JsonElement.class);
+                String type = jsonElement.getAsJsonObject().get("messageType").getAsString();
+
+                WebSocketMessageHandler<String> handler = messageHandlers.get(type);
+                if (handler!= null) {
+                    handler.onMessageReceived(text);
+                } else {
+                    Log.d("Network", "Unknown message type: " + type);
+                }
             }
 
             @Override
@@ -47,27 +67,20 @@ public class WebSocketClient {
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 // Permission needed to transmit cleartext in the manifest
-                // https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
                 Log.d("Network", "connection failure");
             }
         });
     }
 
+    public void addMessageHandler(String messageType, WebSocketMessageHandler<String> handler) {
+        messageHandlers.put(messageType, handler);
+    }
+
     public void sendMessageToServer(String msg) {
-        webSocket.send(msg);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            webSocket.close(1000, "Closing");
-        } finally {
-            super.finalize();
+        if (webSocket!= null) {
+            webSocket.send(msg);
+        } else {
+            Log.d("Network", "WebSocket is not open, can't send a message");
         }
-    }
-
-    // Simple method to demonstrate unit testing and test coverage with sonarcloud
-    public static String concatenateStrings(String first, String second) {
-        return first + " " + second;
     }
 }

@@ -1,34 +1,28 @@
 package at.aau.serg.websocketdemoapp.msg;
 
-public class ChatMessage {
-    private final MessageType messageType = MessageType.CHAT;
 
+public class ChatMessage extends BaseMessage{
     private String playerName;
     private String playerId;
     private String text;
     private String roomID;
 
-    ActionTypeChat actionTypeChat;
+    private ActionTypeChat actionTypeChat;
 
-    /*message need to be broadcasted*/
+    /* message need to be broadcasted */
 
-
-    //String msgIdentifier; //da der socket eh bekannt ist
 
     public ChatMessage(String playerName, String playerId, String text, String roomID) {
+        this.messageType = MessageType.CHAT;
         this.playerName = playerName;
         this.playerId = playerId;
         this.text = text;
         this.roomID = roomID;
-
     }
 
     public ChatMessage() {
+        this.messageType = MessageType.CHAT;
         //default
-    }
-
-    public MessageType getMessageType() {
-        return messageType;
     }
 
     public enum ActionTypeChat {

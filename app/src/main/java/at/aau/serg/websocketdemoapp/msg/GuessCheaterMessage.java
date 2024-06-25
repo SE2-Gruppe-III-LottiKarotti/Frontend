@@ -1,18 +1,26 @@
 package at.aau.serg.websocketdemoapp.msg;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import at.aau.serg.websocketdemoapp.game.Field;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class GuessCheaterMessage {
+@EqualsAndHashCode(callSuper = true)
+public class GuessCheaterMessage extends BaseMessage{
 
-    private final MessageType messageType = MessageType.CHEAT;
-    //der spieler, welcher beschuldigt
     private String accusingPlayerId;
-    private String accusingPlayerName;
-    //der spieler, welcher beschuldigt wird
     private String playerToBlameName;
     private String playerToBlameId;
     private String roomId;
+    private String cheater;
+    @JsonProperty("fields")
+    Field fields[];
+
+    public GuessCheaterMessage () {
+        this.messageType = MessageType.CHEAT;
+    }
 
 
 }

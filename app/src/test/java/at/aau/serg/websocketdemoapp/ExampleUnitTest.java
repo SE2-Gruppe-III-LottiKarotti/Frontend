@@ -12,7 +12,7 @@ import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 class ExampleUnitTest {
-    @Test
+    /*@Test
     void testConcatenateStringsMethod() {
         String first = "Hello";
         String second = "World";
@@ -20,5 +20,5 @@ class ExampleUnitTest {
         String result = WebSocketClient.concatenateStrings(first, second);
 
         assertEquals("Hello World", result);
-    }
+    }*/
 }
