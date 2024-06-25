@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
@@ -25,15 +23,12 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.List;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.BaseMessage;
 import at.aau.serg.websocketdemoapp.msg.JoinRoomMessage;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.RoomListMessage;
-import at.aau.serg.websocketdemoapp.networking.RoomInfo;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class JoinRoomActivity extends AppCompatActivity {
@@ -42,7 +37,6 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     EditText roomNameEditText;
     EditText playerNameEditText;
-    Button refreshButton;
     Button joinButton;
     Button backButton;
     SharedPreferences sharedPreferences;
@@ -83,18 +77,14 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         playerNameEditText = findViewById(R.id.playerNameEditText);
         roomNameEditText = findViewById(R.id.roomNameEditText);
-        refreshButton = findViewById(R.id.refreshButton);
         joinButton = findViewById(R.id.joinButton);
         backButton = findViewById(R.id.backButton);
 
         networkHandler = new WebSocketClient();
         connectToWebSocketServer();
 
-        //init List
-        initRoomList();
 
         //buttons
-        refreshButton.setOnClickListener(v -> sendMessageRoomList());
         joinButton.setOnClickListener(v -> sendMessageJoinRoom());
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -107,12 +97,6 @@ public class JoinRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void initRoomList() {
-        //
-        //RoomSetupMessage message = new RoomSetupMessage();
-
-
-    }
 
     private void connectToWebSocketServer() {
         networkHandler.addMessageHandler("JOIN_ROOM", this::messageReceivedFromServer);
@@ -120,46 +104,31 @@ public class JoinRoomActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessageRoomList() {
-
-        //messageIdentifierJoinRoom = UUID.randomUUID().toString();
-        /**die räume können noch nicht am screen in einer View ausgegeben werden*/
-
-        RoomListMessage askForRoomMessage = new RoomListMessage();
-        askForRoomMessage.setActionTypeRoomListMessage(RoomListMessage.ActionTypeRoomListMessage.ASK_FOR_ROOM_LIST);
-        //askForRoomMessage.setMessageIdentifier(messageIdentifierJoinRoom);
-
-
-        String jsonMessage = new Gson().toJson(askForRoomMessage);
-        networkHandler.sendMessageToServer(jsonMessage);
-
-
-
-    }
 
     private void sendMessageJoinRoom() {
-
-        //messageIdentifierJoinRoom = UUID.randomUUID().toString();
-        /**da die eingabe beim Telefon noch spinnt bzw. der emulator nicht
-         * einwandfrei funktioniert sind vorübergehend noch dummy werte hinterlegt
-         * */
 
         JoinRoomMessage joinRoomMsg = new JoinRoomMessage();
         joinRoomMsg.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ASK);
         String roomNameToTransfer = roomNameEditText.getText().toString();
-        //default value of default db room
-        //dummy val
+
+        //input roomname check
+        if (roomNameToTransfer.length() < 4 || roomNameToTransfer.length() > 10) {
+            Toast.makeText(JoinRoomActivity.this, "room name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (roomNameEditText.getText().toString().isEmpty()) {
             roomNameToTransfer = "TestRoom";
         }
 
-        //askForRoomMessage.setMessageIdentifier(messageIdentifierJoinRoom);
         joinRoomMsg.setRoomName(roomNameToTransfer);
         joinRoomMsg.setPlayerName(playerNameEditText.getText().toString());
-        //dummy val
-        if(playerNameEditText.getText().toString().isEmpty()) {
-            joinRoomMsg.setPlayerName("dummy1");
+
+        //input player check
+        if (playerNameEditText.length() < 4 || playerNameEditText.length() > 10) {
+            Toast.makeText(JoinRoomActivity.this, "player name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
         String jsonMessage = new Gson().toJson(joinRoomMsg);
         networkHandler.sendMessageToServer(jsonMessage);
 
@@ -174,20 +143,6 @@ public class JoinRoomActivity extends AppCompatActivity {
     }
 
 
-    private void handleRoomListMessage(RoomListMessage message) {
-        //
-        /**mit der liste gibt es noch probleme*/
-
-        if (message.getActionTypeRoomListMessage() == RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_OK) {
-            List<RoomInfo> receivedRooms = message.getRoomInfoArrayList();
-            Log.d("MSG", "received room list " + message);
-        }
-        else {
-            runOnUiThread(()-> Toast.makeText(JoinRoomActivity.this, "error", Toast.LENGTH_SHORT).show());
-            Log.d("MSG", "received room list error " + message);
-
-        }
-    }
 
     private void handleJoinRoomMessage(JoinRoomMessage message) {
 
@@ -206,8 +161,6 @@ public class JoinRoomActivity extends AppCompatActivity {
 
         switch(message.getActionTypeJoinRoom()) {
             case JOIN_ROOM_OK:
-                //CustomSharedPreferences.saveRoomIDToSharedPreferences(this, message.getRoomId());
-                //CustomSharedPreferences.savePlayerIDToSharedPreferences(this, message.getPlayerId());
                 Log.d("MSG", "log join room ok " + message);
 
                 runOnUiThread(() -> {
@@ -231,9 +184,8 @@ public class JoinRoomActivity extends AppCompatActivity {
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
-            // Versuche, die Nachricht als RoomMSG zu deserialisieren
+            // deserialize
             try {
-                //TODO
                 BaseMessage baseMessage = gson.fromJson(jsonString, BaseMessage.class);
                 MessageType messageType = baseMessage.getMessageType();
 
@@ -244,17 +196,18 @@ public class JoinRoomActivity extends AppCompatActivity {
                         break;
                     case LIST_ROOMS:
                         RoomListMessage roomListMessage = gson.fromJson(jsonString, RoomListMessage.class);
-                        handleRoomListMessage(roomListMessage);
+                        //handleRoomListMessage(roomListMessage);
+                        /*not implemented at the moment*/
                         break;
                     default:
                         Log.d("error", "unknown message type " + jsonString);
                 }
 
             } catch (JsonSyntaxException e) {
-                // Falls die Deserialisierung fehlschlägt, zeige den gesamten Text der Nachricht an
+                // error case
                 runOnUiThread(() -> {
                     Log.e("Error", "Failed to parse JSON message: " + jsonString, e);
-                    //textViewServerResponse.setText(jsonString);
+
                 });
             }
         } else {
