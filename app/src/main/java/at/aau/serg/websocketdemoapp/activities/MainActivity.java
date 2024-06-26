@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import java.util.UUID;
 
 import at.aau.serg.websocketdemoapp.R;
 import at.aau.serg.websocketdemoapp.msg.MessageType;
-import at.aau.serg.websocketdemoapp.msg.SpielerMessage;
 import at.aau.serg.websocketdemoapp.msg.TestMessage;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
@@ -58,23 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         imageView.setImageResource(R.drawable.img);
 
-        //Gson gson = new Gson();
-
-        /*
-        Button buttonConnect = findViewById(R.id.buttonConnect);
-        buttonConnect.setOnClickListener(v -> connectToWebSocketServer());
-
-        Button buttonSendMsg = findViewById(R.id.buttonSendMsg);
-        buttonSendMsg.setOnClickListener(v -> sendMessage());
-
-        //btn login
-        Button buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener(v -> openLoginActivity());*/
-
         textViewServerResponse = findViewById(R.id.textViewResponse);
 
         networkHandler = new WebSocketClient();
-        //networkHandler.connectToServer();
         connectToWebSocketServer();
         sendMessage();
 
@@ -92,27 +76,20 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    /*private void openLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }*/
 
     private void connectToWebSocketServer() {
         // register a handler for received messages when setting up the connection
-        networkHandler.addMessageHandler("Main", this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.TEST.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
     }
 
     private void sendMessage() {
         //testmessage
         messageIdentifierMainActivity = UUID.randomUUID().toString();
-        //testmessage
-        //Gson gson = new Gson();
         TestMessage testMessage = new TestMessage();
         testMessage.setMessageIdentifier(messageIdentifierMainActivity);
         testMessage.setText("test message");
         String jsonMessage = gson.toJson(testMessage);
-        //networkHandler.sendMessageToServer("test message");
         networkHandler.sendMessageToServer(jsonMessage);
         Log.d("Network", "to server: " + jsonMessage);
     }
@@ -120,14 +97,14 @@ public class MainActivity extends AppCompatActivity {
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
-            // Versuche, die Nachricht als TestMessage zu deserialisieren
+            // deserialize
             try {
                 TestMessage testMessage = gson.fromJson(jsonString, TestMessage.class);
                 String text = testMessage.getText();
                 String compare = "juhu";
-                //positive case (deserialisierung)
+                //positive case
                 if (text.equals(compare)) {
-                    //wenn es für das device war
+                    //if it was for the device
                     if (testMessage.getMessageIdentifier().equals(messageIdentifierMainActivity)) {
                         runOnUiThread(() -> {
                             Log.d("Network", "from server: " + jsonString);
@@ -137,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        //wenn es für ein anderes device war --> das kann wahrscheinlich gelöscht werden
+                        //if it was for another device
                         runOnUiThread(() -> {
                             Log.d("Network", "from server: " + jsonString + "but not for this device");
                             String response = "client connected to server";
@@ -148,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (JsonSyntaxException e) {
-                //wenn ein error auftaucht, wird die komplette json exception angezeigt
+                //error case
                 runOnUiThread(() -> {
                     Log.e("Error", "Failed to parse JSON message: " + jsonString, e);
                     textViewServerResponse.setText(jsonString);

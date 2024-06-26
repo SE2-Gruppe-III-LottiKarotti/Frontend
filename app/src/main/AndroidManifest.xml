@@ -31,12 +31,6 @@
             android:name=".activities.GameActivity"
             android:exported="true" />
         <activity
-            android:name=".activities.SelectRoomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.GameboardActivityTest"
-            android:exported="false" />
-        <activity
             android:name=".activities.JoinRoomActivity"
             android:exported="false" />
         <activity
