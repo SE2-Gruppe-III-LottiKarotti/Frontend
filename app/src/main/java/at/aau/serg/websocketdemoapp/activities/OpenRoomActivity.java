@@ -29,7 +29,11 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import at.aau.serg.websocketdemoapp.R;
+import at.aau.serg.websocketdemoapp.msg.BaseMessage;
+import at.aau.serg.websocketdemoapp.msg.HeartbeatMessage;
+import at.aau.serg.websocketdemoapp.msg.MessageType;
 import at.aau.serg.websocketdemoapp.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoapp.networking.Heartbeat;
 import at.aau.serg.websocketdemoapp.networking.WebSocketClient;
 
 public class OpenRoomActivity extends AppCompatActivity {
@@ -47,6 +51,8 @@ public class OpenRoomActivity extends AppCompatActivity {
     WebSocketClient networkHandler;
 
     SharedPreferences sharedPreferences;
+
+    Heartbeat heartbeat;
 
     private final Gson gson = new Gson();
 
@@ -94,8 +100,11 @@ public class OpenRoomActivity extends AppCompatActivity {
 
         //NEW
         networkHandler = new WebSocketClient();
+        /*heartbeat*/
+        heartbeat = new Heartbeat(networkHandler);
+        heartbeat.start();
 
-        //verbindung aufrufen
+        //call connection
         connectToWebSocketServer();
 
         buttonOpenRoomNow.setOnClickListener(new View.OnClickListener() {
@@ -118,21 +127,14 @@ public class OpenRoomActivity extends AppCompatActivity {
 
     //NEW
     private void connectToWebSocketServer() {
-        networkHandler.addMessageHandler("OPEN_ROOM", this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.OPEN_ROOM.toString(), this::messageReceivedFromServer);
+        networkHandler.addMessageHandler(MessageType.HEARTBEAT.toString(), this::messageReceivedFromServer);
         networkHandler.connectToServer();
     }
 
-    //TODO: to handle this topic: use more than one message maybe... as atomic as possible
-
 
     private void sendMessage() {
-        /*CreateRoomMessage createRoomMessage = new CreateRoomMessage();
-        createRoomMessage.setMessageType(MessageType.CREATE_ROOM);
-        createRoomMessage.setRoomName(editTextCreator.getText().toString());
-        createRoomMessage.setRoomName(editTextRoomName.getText().toString());
 
-        String jsonMessage = new Gson().toJson(createRoomMessage);
-        networkHandler.sendMessageToServer(jsonMessage);*/
 
         //read input
         String roomName = editTextRoomName.getText().toString();
@@ -140,23 +142,24 @@ public class OpenRoomActivity extends AppCompatActivity {
         //check for size
 
         if (roomName.length() < 4 || roomName.length() > 10) {
-            Toast.makeText(OpenRoomActivity.this, "Der Raumname muss zwischen 4 und 10 Zeichen lang sein.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OpenRoomActivity.this, "room name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //messageIdentifierOpenRoom = UUID.randomUUID().toString();
 
-        //set message starts here...
         String finalNumPlayers = spinnerNumPlayers.getSelectedItem().toString();
         String creatorName = editTextCreator.getText().toString();
+
+        if (creatorName.length() < 4 || creatorName.length() > 10) {
+            Toast.makeText(OpenRoomActivity.this, "player name must have between 5 and 9 chars.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
 
         OpenRoomMessage openRoomMessage = new OpenRoomMessage();
         openRoomMessage.setPlayerName(creatorName);
         openRoomMessage.setNumPlayers(finalNumPlayers);
         openRoomMessage.setRoomName(roomName);
-
-        //wichtig, um danach die message beim Empfang zu identifizieren
 
 
         //json
@@ -170,66 +173,80 @@ public class OpenRoomActivity extends AppCompatActivity {
         connectToWebSocketServer();
     }
 
-    /*private void messageReceivedFromServer(String message) {
-        // TODO handle received messages
-        runOnUiThread(() -> {
-            Log.d("OPEN ROOM", message);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            Intent intent =  new Intent(this, GameActivity.class);
-            startActivity(intent);
-        });
-    }*/
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (heartbeat != null) {
+            heartbeat.stop();
+        }
+    }
+
+
     private <T> void messageReceivedFromServer(T message) {
         if (message instanceof String) {
             String jsonString = (String) message;
             Log.d("LOGG", "reached entry messageReceivedFromServer");
-            // Versuche, die Nachricht als TestMessage zu deserialisieren
+            // deserialize
             try {
-                OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
+                BaseMessage baseMessage = gson.fromJson(jsonString, BaseMessage.class);
 
-                if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK) {
-                    // Handle OPEN_ROOM_OK action type
-                    runOnUiThread(() -> {
-                        Log.d("Network", "OPEN_ROOM_OK received: " + jsonString);
-                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_OK messageReceivedFromServer");
-                        Log.d("LOGG", jsonString);
+                if (baseMessage.getMessageType().equals(MessageType.HEARTBEAT)) {
+                    HeartbeatMessage hbMessage = gson.fromJson(jsonString, HeartbeatMessage.class);
+                    Log.d("LOGG", "HEARTBEAT message received: " + hbMessage.getText()); // Add this line
+                    if (hbMessage.getText().equals("pong")) {
+                        Log.d("heartbeat", jsonString);
+                        return;
+                    }
+                }
+                if (baseMessage.getMessageType().equals(MessageType.OPEN_ROOM)) {
+                    //
+                    OpenRoomMessage openRoomMessage = gson.fromJson(jsonString, OpenRoomMessage.class);
 
-                        responseMessage.setText(jsonString);
+                    if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK) {
+                        // Handle OPEN_ROOM_OK action type
+                        runOnUiThread(() -> {
+                            Log.d("Network", "OPEN_ROOM_OK received: " + jsonString);
+                            Log.d("LOGG", "reached tryBlock OPEN_ROOM_OK messageReceivedFromServer");
+                            Log.d("LOGG", jsonString);
 
-                        String roomId = openRoomMessage.getRoomId();
-                        String roomName = openRoomMessage.getRoomName();
-                        String playerId = openRoomMessage.getPlayerId();
-                        String playerName = openRoomMessage.getPlayerName();
+                            responseMessage.setText(jsonString);
 
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("roomId", roomId);
-                        editor.putString("roomName", roomName);
-                        editor.putString("playerId", playerId);
-                        editor.putString("playerName", playerName);
-                        editor.putString("playerToStart", playerId);
-                        editor.putString("start", "player1joined");
-                        editor.apply();
+                            String roomId = openRoomMessage.getRoomId();
+                            String roomName = openRoomMessage.getRoomName();
+                            String playerId = openRoomMessage.getPlayerId();
+                            String playerName = openRoomMessage.getPlayerName();
 
-                        // Redirect to the next activity
-                        Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("roomId", roomId);
+                            editor.putString("roomName", roomName);
+                            editor.putString("playerId", playerId);
+                            editor.putString("playerName", playerName);
+                            editor.putString("playerToStart", playerId);
+                            editor.putString("start", "player1joined");
+                            editor.apply();
 
-                        startActivity(intent);
-                        finish(); // Close this activity
-                    });
-                } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
-                    // Handle OPEN_ROOM_ERR action type
-                    runOnUiThread(() -> {
-                        Log.d("Network", "OPEN_ROOM_ERR received: " + jsonString);
-                        Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
-                        responseMessage.setText(jsonString);
+                            Intent intent = new Intent(OpenRoomActivity.this, GameActivity.class);
 
-                        // Display error message to the user
-                        Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
-                    });
+                            startActivity(intent);
+                            finish();
+                        });
+                    } else if (openRoomMessage.getOpenRoomActionType() == OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR) {
+                        // Handle OPEN_ROOM_ERR action type
+                        runOnUiThread(() -> {
+                            Log.d("Network", "OPEN_ROOM_ERR received: " + jsonString);
+                            Log.d("LOGG", "reached tryBlock OPEN_ROOM_ERR messageReceivedFromServer");
+                            responseMessage.setText(jsonString);
+
+                            // display error msg
+                            Toast.makeText(OpenRoomActivity.this, "Error: " + jsonString, Toast.LENGTH_SHORT).show();
+                        });
+                    }
                 }
 
+
+
             } catch (JsonSyntaxException e) {
-                // Falls die Deserialisierung fehlschlägt, zeige den gesamten Text der Nachricht an
+                // json error
                 runOnUiThread(() -> {
                     Log.d("Network", "Failed to parse JSON message: " + jsonString, e);
                     Log.d("LOGG", "reached errorBlock messageReceivedFromServer");

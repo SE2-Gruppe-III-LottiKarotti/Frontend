@@ -63,20 +63,6 @@
             app:layout_constraintTop_toBottomOf="@id/buttonOpenRoom" />
 
         <Button
-            android:id="@+id/buttonRejoinRoom"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/orange"
-            android:text="RejoinRoom"
-            android:textColor="@color/darkGray"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonJoinRoom" />
-
-        <Button
             android:id="@+id/buttonInstructions"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
@@ -88,7 +74,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonRejoinRoom" />
+            app:layout_constraintTop_toBottomOf="@id/buttonJoinRoom" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
